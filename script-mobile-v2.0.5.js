@@ -36,6 +36,82 @@ if (HXH_DOMAINS.indexOf(location.hostname) === -1) return;
   var IH = 'inner' + 'HTML';
   var SKIP = { A: 1, SCRIPT: 1, STYLE: 1, TEXTAREA: 1, CODE: 1, PRE: 1, BUTTON: 1, SELECT: 1 };
 
+  /* ---------- POPUP: niente apri/chiudi a raffica ----------
+     L'originale accoda un fadeIn per ogni parola sfiorata col mouse, senza
+     mai annullarlo. Qui il popup si apre solo se il mouse resta fermo sulla
+     parola per un attimo, e passare sopra altre parole annulla le aperture
+     in sospeso. Le funzioni vengono "bloccate" su window, cosi' funziona sia
+     che l'originale parta prima sia che parta dopo. */
+  var SHOW_DELAY = 350; /* ms fermi sulla parola prima di aprire */
+  var HIDE_DELAY = 300; /* ms prima di chiudere (per poter entrare nel popup) */
+  var FADE = 150;
+  var showTimer = null;
+
+  function calcDim(el, top) {
+    var b = 0;
+    while (el) {
+      b += top ? el.offsetTop : el.offsetLeft;
+      el = el.offsetParent;
+    }
+    return b;
+  }
+
+  function fadePopup(show) {
+    var p = document.getElementById('keyword_popup');
+    if (!p) { return; }
+    var jq = window.jQuery;
+    if (!jq) { p.style.display = show ? '' : 'none'; return; }
+    var hidden = p.style.display === 'none' || window.getComputedStyle(p).display === 'none';
+    if (show) {
+      if (hidden) { jq(p).stop(true, true).fadeIn(FADE); }
+      else { jq(p).stop(true).fadeTo(FADE, 1); }
+    } else if (!hidden) {
+      jq(p).stop(true).fadeOut(FADE);
+    }
+  }
+
+  function fillPopup(a) {
+    var p = document.getElementById('keyword_popup');
+    var title = document.getElementById('keyword_popup_title');
+    var text = document.getElementById('keyword_popup_text');
+    if (!p || !title || !text) { return false; }
+    title[IH] = a[IH];
+    text[IH] = unescape(a.getAttribute('data-keywordtooltip') || '');
+    p.style.left = calcDim(a, false) + 'px';
+    p.style.top = (calcDim(a, true) + 35) + 'px';
+    return true;
+  }
+
+  function fixedShow(a) {
+    clearTimeout(window.key_timeout);
+    clearTimeout(showTimer);
+    showTimer = setTimeout(function () {
+      showTimer = null;
+      if (fillPopup(a)) { fadePopup(true); }
+    }, SHOW_DELAY);
+  }
+
+  function fixedHide() {
+    clearTimeout(showTimer);
+    showTimer = null;
+    clearTimeout(window.key_timeout);
+    window.key_timeout = setTimeout(function () { fadePopup(false); }, HIDE_DELAY);
+  }
+
+  function lockGlobal(name, fn) {
+    try {
+      Object.defineProperty(window, name, {
+        configurable: true,
+        get: function () { return fn; },
+        set: function () {}
+      });
+    } catch (e) {
+      window[name] = fn;
+    }
+  }
+  lockGlobal('show_keywordtooltips', fixedShow);
+  lockGlobal('hide_keywordtooltips', fixedHide);
+
   /* lettera (di qualsiasi alfabeto, accentate comprese), cifra o underscore */
   function isWordChar(c) {
     if (!c) { return false; }
