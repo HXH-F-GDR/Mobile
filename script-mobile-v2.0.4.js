@@ -4166,177 +4166,136 @@ var POSTPACK_FONT_ARR = ["Alegreya Sans SC","Calistoga","Cinzel","Montserrat","R
 
 // ═══════════════════════════════════════════════════════════════
 // FIX AVATAR NELLE CITAZIONI (mobile) — copia di
-// fix-avatar-no-quote-generici-hunterxhunter-v2.js
+// fix-avatar-no-quote-generici-hunterxhunter-v3.js
 // Avatar dell'autore nei quote interni (#ffav_quote), niente avatar
-// nei quote generici (#quote_generico).
+// nei quote generici (#quote_generico). Parte subito, senza attese:
+// richiede l'opzione citazioni di Avatar Pack disattivata (se resta
+// attiva, ripulisce comunque dopo l'originale).
 // ═══════════════════════════════════════════════════════════════
 
-;(function() { 
- function fixQuoteAvatars() { 
- if (window.__hxhQuoteAvatar) return; 
- window.__hxhQuoteAvatar = true; 
- 
- const defaultAvatar = "https://upload.forumfree.net/i/ff13982804/Hunter/NoAvatar.png"; 
- 
- // NON rimuovere gli avatar esistenti se sono già corretti 
- // Rimuovi solo quelli con immagini rotte o generiche 
- document.querySelectorAll('.quoteentry').forEach(el => { 
- const img = el.querySelector('img'); 
- // Rimuovi solo se l'immagine è quella di default o è rotta 
- if (img && (img.src.includes('default_avatar') || img.src.includes('RDGkT8W'))) { 
- el.remove(); 
- } 
- }); 
- 
- const styleId = 'ffav-quote-fix-styles'; 
- if (!document.getElementById(styleId)) { 
- const style = document.createElement('style'); 
- style.id = styleId; 
- style.textContent = ` 
- #ffav_quote { 
- padding-left: 83px !important; 
- padding-bottom: 5px !important; 
- } 
- #ffav_quote .quote {padding-left: 83px; min-height: 85px} 
- #ffav_quote.quote {padding-left: 83px; min-height: 85px} 
- .quote#ffav_quote {padding-left: 83px; min-height: 85px} 
- .quoteentry img { 
- width: 60px; 
- box-shadow: 0 2px 2px rgba(0, 0, 0, 0.1); 
- height: 60px; 
- float: left; 
- margin-top: 10px; 
- margin-left: 30px; 
- padding: 1px; 
- border: 1px solid #D5D5D5; 
- background: #FFF; 
- } 
- `; 
- document.head.appendChild(style); 
- } 
- 
- const quoteTops = document.querySelectorAll('.quote_top'); 
- 
- quoteTops.forEach((quoteTop) => { 
- // CONTROLLA se esiste già un avatar corretto 
- const existingAvatar = quoteTop.nextElementSibling; 
- if (existingAvatar && existingAvatar.classList.contains('quoteentry')) { 
- const existingImg = existingAvatar.querySelector('img'); 
- // Se l'avatar esiste ed è valido (non default e non rotto), SALTALO 
- if (existingImg && !existingImg.src.includes('default_avatar') && !existingImg.src.includes('RDGkT8W')) { 
- return; // Skip questo quote, l'avatar è già corretto 
- } 
- } 
- 
- const quoteLink = quoteTop.querySelector('a[href*="#entry"]'); 
- 
- // Se non c'è un link a un entry, è un quote esterno 
- if (!quoteLink) { 
- // Rimuovi avatar esistente se presente 
- const existingAvatar = quoteTop.nextElementSibling; 
- if (existingAvatar && existingAvatar.classList.contains('quoteentry')) { 
- existingAvatar.remove(); 
- } 
- 
- // Il .quote è il nextElementSibling dopo aver rimosso eventuali avatar 
- // Oppure è già il nextElementSibling se non c'erano avatar 
- let quote = quoteTop.nextElementSibling; 
- // Se abbiamo appena rimosso un avatar, il quote è ora il nextElementSibling 
- if (quote && quote.classList.contains('quote')) { 
- quote.id = 'quote_generico'; 
- } 
- 
- return; // Skip questo quote 
- } 
- 
- // Per i quote interni, cerca il .quote 
- let quote = quoteTop.nextElementSibling; 
- // Salta eventuali .quoteentry 
- while (quote && quote.classList.contains('quoteentry')) { 
- quote = quote.nextElementSibling; 
- } 
- 
- if (quote && quote.classList.contains('quote')) { 
- quote.id = 'ffav_quote'; 
- } 
- 
- let avatarUrl = defaultAvatar; 
- const href = quoteLink.getAttribute('href'); 
- const entryMatch = href.match(/#entry(\d+)/); 
- 
- if (entryMatch) { 
- const entryNumber = entryMatch[1]; 
- const fullEntryId = 'ee' + entryNumber; 
- const targetPost = document.getElementById(fullEntryId); 
- 
- if (targetPost) { 
- // PRIORITÀ: cerca prima in .post .avatar img 
- let avatarImg = targetPost.querySelector('.post .avatar img'); 
- 
- // Fallback agli altri selettori 
- if (!avatarImg) { 
- avatarImg = targetPost.querySelector('.details .avatar img'); 
- } 
- 
- if (!avatarImg) { 
- avatarImg = targetPost.querySelector('.details img[alt="Avatar"]'); 
- } 
- 
- if (!avatarImg) { 
- avatarImg = targetPost.querySelector('.post .details img'); 
- } 
- 
- // Fallback mobile: avatar fuori da .details 
- if (!avatarImg) { 
- avatarImg = targetPost.querySelector('.avatar img, img.avatar'); 
- } 
- 
- if (avatarImg && avatarImg.src) { 
- avatarUrl = avatarImg.src; 
- } 
- } 
- } 
- 
- const avatarDiv = document.createElement('div'); 
- avatarDiv.className = 'quoteentry'; 
- 
- const img = document.createElement('img'); 
- img.src = avatarUrl; 
- img.alt = 'Avatar'; 
- img.onerror = function() { 
- this.src = defaultAvatar; 
- }; 
- 
- avatarDiv.appendChild(img); 
- quoteTop.insertAdjacentElement('afterend', avatarDiv); 
- }); 
- 
- // CLEANUP FINALE - esegui DOPO che lo script originale ha finito 
- setTimeout(function() { 
- document.querySelectorAll('.quote_top').forEach(function(quoteTop) { 
- const quoteLink = quoteTop.querySelector('a[href*="#entry"]'); 
- if (!quoteLink) { 
- // Per i quote esterni usa nextElementSibling 
- let quote = quoteTop.nextElementSibling; 
- // Salta eventuali .quoteentry che potrebbero essere rimasti 
- while (quote && quote.classList.contains('quoteentry')) { 
- quote = quote.nextElementSibling; 
- } 
- if (quote && quote.classList.contains('quote')) { 
- quote.id = 'quote_generico'; 
- } 
- } 
- }); 
- }, 1000); 
- 
- } 
+;(function () {
+  if (window.__hxhQuoteAvatar) return;
+  window.__hxhQuoteAvatar = true;
 
- // Il bundle puo' girare prima che il DOM sia pronto: aspetta, poi gli 800ms dell'originale. 
- if (document.readyState === 'loading') { 
- document.addEventListener('DOMContentLoaded', function() { setTimeout(fixQuoteAvatars, 800); }); 
- } else { 
- setTimeout(fixQuoteAvatars, 800); 
- } 
+  var DEFAULT_AVATAR = 'https://upload.forumfree.net/i/ff13982804/Hunter/NoAvatar.png';
+  var PLACEHOLDERS = ['default_avatar', 'RDGkT8W'];
+  var AVATAR_SELECTORS = [
+    '.post .avatar img',
+    '.details .avatar img',
+    '.details img[alt="Avatar"]',
+    '.post .details img',
+    '.avatar img',          /* mobile: avatar fuori da .details */
+    'img.avatar'
+  ];
+
+  /* ---------- stili: inseriti subito, prima ancora che giri il JS sui post ---------- */
+  function injectStyles() {
+    if (document.getElementById('ffav-quote-fix-styles')) return;
+    var css = '' +
+      /* specificita' piu' alta dell'originale (#ffav_quote ... !important) */
+      '.quote#ffav_quote{padding-left:83px !important;padding-bottom:5px !important;min-height:85px}' +
+      /* spazio riservato ai quote interni gia' al primo disegno della pagina,
+         cosi' il testo non "salta" quando arriva l'avatar */
+      '.quote_top:has(a[href*="#entry"]) + .quote,' +
+      '.quote_top:has(a[href*="#entry"]) + .quoteentry + .quote{padding-left:83px !important;padding-bottom:5px !important;min-height:85px}' +
+      '.quoteentry img{width:60px;height:60px;float:left;margin-top:10px;margin-left:30px;padding:1px;' +
+      'border:1px solid #D5D5D5;background:#FFF;box-shadow:0 2px 2px rgba(0,0,0,0.1)}';
+    var style = document.createElement('style');
+    style.id = 'ffav-quote-fix-styles';
+    style.textContent = css;
+    (document.head || document.documentElement).appendChild(style);
+  }
+
+  function isValidAvatar(img) {
+    if (!img) return false;
+    var src = img.getAttribute('src') || '';
+    if (!src) return false;
+    for (var i = 0; i < PLACEHOLDERS.length; i++) {
+      if (src.indexOf(PLACEHOLDERS[i]) !== -1) return false;
+    }
+    return true;
+  }
+
+  function findAvatar(entryNumber) {
+    var targetPost = document.getElementById('ee' + entryNumber);
+    if (!targetPost) return DEFAULT_AVATAR;
+    for (var i = 0; i < AVATAR_SELECTORS.length; i++) {
+      var img = targetPost.querySelector(AVATAR_SELECTORS[i]);
+      if (img && img.src) return img.src;
+    }
+    return DEFAULT_AVATAR;
+  }
+
+  function makeEntry(src) {
+    var div = document.createElement('div');
+    div.className = 'quoteentry hxh-quote-avatar';
+    var img = document.createElement('img');
+    img.alt = 'Avatar';
+    img.onerror = function () { this.onerror = null; this.src = DEFAULT_AVATAR; };
+    img.src = src;
+    div.appendChild(img);
+    return div;
+  }
+
+  /* Passata unica e ripetibile: rimette in ordine ogni quote. */
+  function process() {
+    var tops = document.querySelectorAll('.quote_top');
+    for (var i = 0; i < tops.length; i++) {
+      var top = tops[i];
+
+      /* raccoglie gli avatar gia' presenti subito dopo il titolo del quote */
+      var entries = [];
+      var cur = top.nextElementSibling;
+      while (cur && cur.classList.contains('quoteentry')) {
+        entries.push(cur);
+        cur = cur.nextElementSibling;
+      }
+      var quote = (cur && cur.classList.contains('quote')) ? cur : null;
+      var link = top.querySelector('a[href*="#entry"]');
+      var j;
+
+      /* quote generico: niente avatar */
+      if (!link) {
+        for (j = 0; j < entries.length; j++) entries[j].parentNode.removeChild(entries[j]);
+        if (quote) quote.id = 'quote_generico';
+        continue;
+      }
+
+      if (quote) quote.id = 'ffav_quote';
+
+      /* quote interno: tiene un solo avatar valido, toglie segnaposto e doppioni */
+      var keep = null;
+      for (j = 0; j < entries.length; j++) {
+        if (!keep && isValidAvatar(entries[j].querySelector('img'))) keep = entries[j];
+        else entries[j].parentNode.removeChild(entries[j]);
+      }
+      if (keep) continue;
+
+      var m = (link.getAttribute('href') || '').match(/#entry(\d+)/);
+      var src = m ? findAvatar(m[1]) : DEFAULT_AVATAR;
+      top.parentNode.insertBefore(makeEntry(src), top.nextSibling);
+    }
+  }
+
+  injectStyles();
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', process);
+  } else {
+    process();
+  }
+
+  /* passate di sicurezza nel caso l'opzione citazioni di Avatar Pack sia
+     ancora attiva e l'originale arrivi dopo di noi */
+  function lateRuns() {
+    process();
+    setTimeout(process, 1500);
+  }
+  if (document.readyState === 'complete') {
+    lateRuns();
+  } else {
+    window.addEventListener('load', lateRuns);
+  }
 })();
 
 
