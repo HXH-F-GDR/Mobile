@@ -121,6 +121,35 @@ if (HXH_DOMAINS.indexOf(location.hostname) === -1) return;
     return res;
   }
 
+  /* ---------- apostrofi e caratteri speciali nei nomi ----------
+     L'originale trasforma ogni nome con btoa(), che va in errore con
+     apostrofi tipografici, trattini lunghi, emoji ecc. e blocca tutto lo
+     script. Mentre gira l'originale sostituiamo btoa con una versione che
+     accetta qualsiasi carattere e produce solo cifre (cosi' nessuna parola
+     chiave puo' "agganciarsi" dentro i segnaposto). */
+  function safeToken(s) {
+    var out = '';
+    s = String(s);
+    for (var i = 0; i < s.length; i++) { out += s.charCodeAt(i) + '_'; }
+    return out;
+  }
+  function callOriginal(fn, s) {
+    var saved = window.btoa;
+    var res;
+    window.btoa = safeToken;
+    try {
+      res = fn(s);
+    } finally {
+      window.btoa = saved;
+    }
+    return res;
+  }
+  /* apostrofo dritto e tipografico contano come uguali */
+  function normApos(s) {
+    var out = s.replace(/[\u2018\u2019\u02BC]/g, "'");
+    return out;
+  }
+
   function isUpper(c) {
     var res = !!c && c !== c.toLowerCase();
     return res;
@@ -143,15 +172,20 @@ if (HXH_DOMAINS.indexOf(location.hostname) === -1) return;
   /* Usa la funzione originale sul solo testo per scoprire quali parole chiave
      compaiono e recuperare i loro <a> gia' pronti (con contenuto del tooltip). */
   function discover(originalFn, plainText) {
-    var t = document.createElement('template');
-    var produced = originalFn(escapeHtml(plainText));
-    t[IH] = produced;
-    var anchors = t.content.querySelectorAll('a.keyword_tooltip');
+    /* il testo viene provato anche con gli apostrofi scambiati, cosi' si
+       trovano le parole chiave scritte con l'uno o con l'altro */
+    var variants = [plainText, normApos(plainText), plainText.split("'").join('\u2019')];
     var map = {};
     var list = [];
-    for (var i = 0; i < anchors.length; i++) {
-      var key = anchors[i].textContent.toLowerCase();
-      if (!map[key]) { map[key] = anchors[i]; list.push(key); }
+    for (var v = 0; v < variants.length; v++) {
+      var t = document.createElement('template');
+      var produced = callOriginal(originalFn, escapeHtml(variants[v]));
+      t[IH] = produced;
+      var anchors = t.content.querySelectorAll('a.keyword_tooltip');
+      for (var i = 0; i < anchors.length; i++) {
+        var key = normApos(anchors[i].textContent.toLowerCase());
+        if (!map[key]) { map[key] = anchors[i]; list.push(key); }
+      }
     }
     /* prima le parole piu' lunghe, come fa l'originale */
     list.sort(function (a, b) { return b.length - a.length; });
@@ -169,7 +203,7 @@ if (HXH_DOMAINS.indexOf(location.hostname) === -1) return;
       if (!isWordChar(text.charAt(i - 1))) {
         for (var k = 0; k < data.list.length; k++) {
           var key = data.list[k];
-          if (text.substr(i, key.length).toLowerCase() === key && !isWordChar(text.charAt(i + key.length))) {
+          if (normApos(text.substr(i, key.length).toLowerCase()) === key && !isWordChar(text.charAt(i + key.length))) {
             found = key;
             break;
           }
@@ -256,7 +290,7 @@ if (HXH_DOMAINS.indexOf(location.hostname) === -1) return;
       out = fixedReplace(originalFn, str);
     } catch (e) {
       console.error('[Keyword Tooltips fix mobile]', e);
-      out = originalFn(str);
+      out = callOriginal(originalFn, str);
     }
     return out;
   }
