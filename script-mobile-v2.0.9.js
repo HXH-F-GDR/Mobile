@@ -370,7 +370,7 @@ if (HXH_DOMAINS.indexOf(location.hostname) === -1) return;
   /* Se la lista non e' gia' stata caricata con il suo tag script (es. sul
      mobile, dove c'e' un solo file), la carichiamo da qui e la applichiamo
      appena arriva. */
-  var LISTA_URL = 'https://cdn.jsdelivr.net/gh/FadeToRed/ScriptForumfree@main/keyword-tooltips-lista.js';
+  var LISTA_URL = 'https://cdn.jsdelivr.net/gh/HXH-F-GDR/ScriptForumfree@main/keyword-tooltips-lista.js';
   if (!window.HXH_KEYWORDS) {
     var ls = document.createElement('script');
     ls.src = LISTA_URL;
