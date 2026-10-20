@@ -6,7 +6,7 @@
 // 1 = accesso solo staff (admin, g1-g4)
 // 2 = accesso solo amministratori (admin, g1)
 // ═══════════════════════════════════════════════════════════════
-var MANUTENZIONE = 0; // <-- CAMBIA QUESTO VALORE
+var MANUTENZIONE = 1; // <-- CAMBIA QUESTO VALORE
 
 // ═══════════════════════════════════════════════════════════════
 // GUARD GLOBALE — gira solo su mobile (classe ffm nel body)
@@ -4819,7 +4819,7 @@ if (document.readyState === 'loading') {
     sub.className = "mnt-sub";
     sub.innerHTML =
         "Il forum \u00e8 temporaneamente offline per un grosso aggiornamento.<br>" +
-        "Tutto dovrebbe tornare operativo entro un paio di giorni. Grazie per la pazienza!";
+        "Tutto dovrebbe tornare operativo al massimo entro il 5/11/2026. Grazie per la pazienza!";
  
     head.appendChild(h1);
     head.appendChild(sub);
