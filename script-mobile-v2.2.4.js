@@ -1210,13 +1210,13 @@ if(t.sectionId){var sid=String(t.sectionId);outer:for(var g in config.coloriSezi
 
 
 // ═══════════════════════════════════════════════════════════════
-// METEO — carica meteo-v7.4.js, lo stesso file del desktop
+// METEO — carica meteo-v7.5.js, lo stesso file del desktop
 // Luoghi, tempo di gioco e override sono quelli del desktop: qui non
 // c'è niente da tenere allineato. Sul mobile la scheda è sempre aperta.
 // Quando esce una nuova versione dello script meteo, aggiorna solo URL_METEO.
 // ═══════════════════════════════════════════════════════════════
 ;(function() {
-    var URL_METEO = 'https://cdn.jsdelivr.net/gh/HXH-F-GDR/ScriptForumfree@main/meteo-v7.4.js';
+    var URL_METEO = 'https://cdn.jsdelivr.net/gh/HXH-F-GDR/ScriptForumfree@main/meteo-v7.5.js';
 
     function parti() {
         if (window.HxHMeteo) window.HxHMeteo.avvia({ mobile: true });
