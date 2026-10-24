@@ -4537,7 +4537,7 @@ if (document.readyState === 'loading') {
 // ═══════════════════════════════════════════════════════════════
 
 (function() {
- var CSS_URL = 'https://cdn.jsdelivr.net/gh/HXH-F-GDR/CSS@main/redazioni-v1.0.0.css';
+ var CSS_URL = 'https://cdn.jsdelivr.net/gh/HXH-F-GDR/CSS@main/redazioni-v1.0.1.css';
  var SEZ = {
   f65121577: {k: 'sp', home: '/?f=65121577', fonts: 'family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Libre+Franklin:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&family=Special+Elite'},
   f65121578: {k: 'yt', home: '/?f=65121578', fonts: 'family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Libre+Franklin:wght@400;500;600;700&family=Manufacturing+Consent'},
