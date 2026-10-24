@@ -4532,28 +4532,254 @@ if (document.readyState === 'loading') {
 	setInterval(scan, 700);
 })();
 
-	// ═══════════════════════════════════════════════════════════════
+// ═══════════════════════════════════════════════════════════════
+// REDAZIONI - LA SPINA - YORK SHIN TIMES - SWARDANI POST - POST
+// ═══════════════════════════════════════════════════════════════
+var REDAZIONI_FIRME = { 
+ '65121577': { nome: 'La Spina', firme: ['Spina Dorsale', 'Alla Spina'], libera: false }, 
+ '65121579': { nome: 'Swardani Post', firme: ['Ambrose Veritas', 'Ophelia Stroud', 'Gideon Marsh'], libera: true }, 
+ '65121578': { nome: 'York Shin Times', firme: ['Axel Quinn', 'Beatrisse Lindholm'], libera: true } 
+}; 
+	
+(function() {
+  var HEAD_RE = /^[ \t]*(Firma|Data)[ \t]*:[ \t]*([^\r\n]*)(\r?\n|$)/i;
+  var MESI = ['gennaio','febbraio','marzo','aprile','maggio','giugno','luglio','agosto','settembre','ottobre','novembre','dicembre'];
+
+  /* "14/03/2017" o "2017-03-14" -> {d, m, y} */
+  function parseData(str) {
+    var s = String(str || '').trim(), m;
+    if ((m = s.match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4})$/))) return valid(+m[1], +m[2], +m[3]);
+    if ((m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/))) return valid(+m[3], +m[2], +m[1]);
+    return null;
+  }
+  function valid(d, m, y) {
+    if (m < 1 || m > 12 || d < 1 || d > 31) return null;
+    var dt = new Date(y, m - 1, d);
+    if (dt.getMonth() !== m - 1) return null;
+    return {d: d, m: m, y: y};
+  }
+  function pad(n) { return n < 10 ? '0' + n : '' + n; }
+  function toIso(o) { return o ? o.y + '-' + pad(o.m) + '-' + pad(o.d) : ''; }
+  function toLine(o) { return o ? pad(o.d) + '/' + pad(o.m) + '/' + o.y : ''; }
+
+  function config() {
+    var c = window.REDAZIONI_FIRME || {};
+    var body = document.body;
+    if (!body) return null;
+    for (var id in c) {
+      if (body.classList.contains('f' + id)) { c[id].id = id; return c[id]; }
+    }
+    return null;
+  }
+
+  function store(key, val) {
+    try { if (val === undefined) return localStorage.getItem(key); localStorage.setItem(key, val); } catch (e) {}
+    return null;
+  }
+
+  /* ── EDITOR ── */
+  /* Legge le righe "Firma:" e "Data:" all'inizio del testo */
+  function readHead(text) {
+    var out = {firma: '', data: ''}, v = String(text || ''), m, guard = 0;
+    while ((m = v.match(HEAD_RE)) && guard++ < 4) {
+      out[m[1].toLowerCase()] = m[2].trim();
+      v = v.slice(m[0].length);
+    }
+    out.rest = v;
+    return out;
+  }
+  function writeHead(ta, firma, data) {
+    var h = readHead(ta.value), lines = '';
+    if (firma) lines += 'Firma: ' + firma + '\n';
+    if (data) lines += 'Data: ' + data + '\n';
+    ta.value = lines + h.rest;
+  }
+
+  function initEditor(cfg) {
+    var body = document.body;
+    if (body.id !== 'send') return;
+    var ta = document.querySelector('textarea[name="Post"]');
+    var title = document.querySelector('input[name="TopicTitle"]');
+    if (!ta || !title || document.getElementById('rdz-firma')) return;
+
+    var firme = cfg.firme || [];
+    var libera = !!cfg.libera;
+    var key = 'rdz_firma_' + cfg.id;
+
+    var box = document.createElement('div');
+    box.id = 'rdz-firma';
+    box.style.cssText = 'display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin:0 0 8px;padding:8px 10px;border:1px dashed #888;border-radius:6px;font-size:13px;text-align:left;';
+    var lbl = document.createElement('label');
+    lbl.textContent = 'Firma come:';
+    lbl.style.cssText = 'font-weight:bold;margin:0;';
+    var sel = document.createElement('select');
+    sel.style.cssText = 'padding:3px 6px;font-size:13px;max-width:100%;';
+    var other = document.createElement('input');
+    other.type = 'text';
+    other.placeholder = 'Nome con cui firmare (es. il tuo PG)';
+    other.maxLength = 60;
+    other.style.cssText = 'padding:3px 6px;font-size:13px;min-width:200px;flex:1;display:none;';
+    var dlbl = document.createElement('label');
+    dlbl.textContent = 'Data:';
+    dlbl.style.cssText = 'font-weight:bold;margin:0 0 0 8px;';
+    var date = document.createElement('input');
+    date.type = 'date';
+    date.min = '1900-01-01';
+    date.style.cssText = 'padding:3px 6px;font-size:13px;';
+    var hint = document.createElement('span');
+    hint.style.cssText = 'font-size:11px;opacity:0.75;width:100%;';
+    hint.textContent = 'Firma e data vengono salvate come prime righe del testo e mostrate al posto di nickname e data reale. Lascia la data vuota per usare quella di pubblicazione.';
+    var dkey = 'rdz_data_' + cfg.id;
+
+    function opt(value, text) {
+      var o = document.createElement('option');
+      o.value = value; o.textContent = text;
+      sel.appendChild(o);
+    }
+    if (libera || !firme.length) opt('', '— Nessuna (mostra il nickname) —');
+    for (var i = 0; i < firme.length; i++) opt(firme[i], firme[i]);
+    if (libera) opt('__altro__', 'Altro…');
+
+    function current() {
+      if (sel.value === '__altro__') return other.value.trim();
+      return sel.value;
+    }
+    function apply() {
+      other.style.display = sel.value === '__altro__' ? 'block' : 'none';
+      var name = current();
+      var d = parseData(date.value);
+      writeHead(ta, name, toLine(d));
+      if (name) store(key, name);
+      store(dkey, date.value || '');
+    }
+
+    var head = readHead(ta.value);
+    var existing = head.firma;
+    var startData = head.data ? parseData(head.data) : (isNewTopic() ? parseData(store(dkey) || '') : null);
+    date.value = toIso(startData);
+    var start = existing || (isNewTopic() ? (store(key) || '') : '');
+    if (!libera && firme.length && start !== existing && firme.indexOf(start) === -1) start = '';
+    if (!libera && firme.length && !start) start = firme[0];
+    if (start && firme.indexOf(start) !== -1) sel.value = start;
+    else if (start && libera) { sel.value = '__altro__'; other.value = start; }
+    else if (start) { opt(start, start); sel.value = start; }
+    else sel.value = '';
+
+    sel.onchange = apply;
+    other.oninput = apply;
+    date.onchange = apply;
+    date.oninput = apply;
+    apply();
+
+    box.appendChild(lbl);
+    box.appendChild(sel);
+    box.appendChild(other);
+    box.appendChild(dlbl);
+    box.appendChild(date);
+    box.appendChild(hint);
+    ta.parentNode.insertBefore(box, ta);
+  }
+
+  function isNewTopic() {
+    return document.body.classList.contains('new-topic');
+  }
+
+  /* ── VISUALIZZAZIONE ── */
+  /* Toglie la prima riga del testo se è "Firma: ..." o "Data: ..." e la restituisce */
+  function takeLine(color) {
+    var nodes = [], n = color.firstChild, text = '';
+    while (n && n.nodeType === 3 && !n.textContent.trim()) n = n.nextSibling;
+    var first = n;
+    while (n) {
+      if (n.nodeType === 1 && n.tagName === 'BR') break;
+      if (n.nodeType === 1 && n.tagName === 'IMG') return null;
+      text += n.textContent;
+      nodes.push(n);
+      if (text.length > 140) return null;
+      n = n.nextSibling;
+    }
+    var m = text.match(/^\s*(Firma|Data)\s*:\s*(.+?)\s*$/i);
+    if (!m) return null;
+    var c = color.firstChild;
+    while (c && c !== first) { var nx = c.nextSibling; color.removeChild(c); c = nx; }
+    for (var i = 0; i < nodes.length; i++) color.removeChild(nodes[i]);
+    if (n && n.tagName === 'BR') color.removeChild(n);
+    return {key: m[1].toLowerCase(), value: m[2]};
+  }
+
+  function setDate(li, o) {
+    var when = li.querySelector('.title2.top .when');
+    if (!when) return;
+    while (when.firstChild) when.removeChild(when.firstChild);
+    var parts = [['', 'il'], ['d_day', String(o.d)], ['d_month', MESI[o.m - 1]], ['d_year', String(o.y)]];
+    for (var i = 0; i < parts.length; i++) {
+      var sp = document.createElement('span');
+      if (parts[i][0]) sp.className = parts[i][0];
+      sp.textContent = parts[i][1];
+      when.appendChild(sp);
+      if (i < parts.length - 1) when.appendChild(document.createTextNode(' '));
+    }
+    li.setAttribute('data-data', toIso(o));
+  }
+
+  function applyToArticle(li) {
+    if (li.getAttribute('data-rdz')) return;
+    li.setAttribute('data-rdz', '1');
+    var color = li.querySelector('.center .color');
+    if (!color) return;
+    var head = {}, line, guard = 0;
+    while ((line = takeLine(color)) && guard++ < 4) head[line.key] = line.value;
+    var br = color.firstChild;
+    while (br && br.nodeType === 3 && !br.textContent.trim()) br = br.nextSibling;
+    if (guard && br && br.nodeType === 1 && br.tagName === 'BR') color.removeChild(br);
+    if (head.firma) {
+      var who = li.querySelector('.title2.top .who');
+      if (who) {
+        var link = who.querySelector('a');
+        var span = document.createElement('span');
+        span.className = 'rdz-name';
+        span.textContent = head.firma;
+        if (link) link.parentNode.replaceChild(span, link);
+        else who.appendChild(span);
+        li.setAttribute('data-firma', head.firma);
+      }
+    }
+    var d = parseData(head.data);
+    if (d) setDate(li, d);
+  }
+
+  function initDisplay() {
+    if (document.body.id !== 'blog') return;
+    var list = document.body.classList.contains('articles_list');
+    var items = document.querySelectorAll('.skin_tbl > ol > li.article');
+    for (var i = 0; i < items.length; i++) {
+      if (!list && i > 0) break;
+      applyToArticle(items[i]);
+    }
+  }
+
+  function run() {
+    var cfg = config();
+    if (!cfg) return;
+    initEditor(cfg);
+    initDisplay();
+  }
+
+  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
+  else run();
+})();
+// ═══════════════════════════════════════════════════════════════
 // REDAZIONI - LA SPINA - YORK SHIN TIMES - SWARDANI POST
 // ═══════════════════════════════════════════════════════════════
-
+/* Redazioni in versione mobile (La Spina, York Shin Times, Swardani Post). Nella lista usa la testata della sezione, nella pagina dell'articolo (dove l'HTML della sezione non arriva) mette una testata minima */
 (function() {
- var CSS_URL = 'https://cdn.jsdelivr.net/gh/HXH-F-GDR/CSS@main/redazioni-v1.0.1.css';
+ var CSS_URL = 'https://cdn.jsdelivr.net/gh/HXH-F-GDR/CSS@main/redazioni-v1.0.2.css';
  var SEZ = {
-  f65121577: {k: 'sp', home: '/?f=65121577', fonts: 'family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Libre+Franklin:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&family=Special+Elite'},
-  f65121578: {k: 'yt', home: '/?f=65121578', fonts: 'family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Libre+Franklin:wght@400;500;600;700&family=Manufacturing+Consent'},
-  f65121579: {k: 'sw', home: '/?f=65121579', fonts: 'family=Cinzel:wght@700;800&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@400;600;700'}
+  f65121577: {k: 'sp', home: '/?f=65121577', name: 'La <em>Spina</em>', back: 'Tutti gli articoli', fonts: 'family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Libre+Franklin:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&family=Special+Elite'},
+  f65121578: {k: 'yt', home: '/?f=65121578', name: 'York Shin Times', back: 'Torna alla home', fonts: 'family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Libre+Franklin:wght@400;500;600;700&family=Manufacturing+Consent'},
+  f65121579: {k: 'sw', home: '/?f=65121579', name: 'Swardani Post', back: 'Torna alla home', fonts: 'family=Cinzel:wght@700;800&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@400;600;700'}
  };
- /* Testi che da desktop stanno nell'HTML della sezione: se li cambi lì, cambiali anche qui */
- var TXT = {
-  spVoto: 3,
-  spNota: 'Mai sopra il quattro.',
-  spTicker: 'L\'Associazione smentisce. Di nuovo.',
-  swBrief: 'L\'Associazione Hunter invita alla calma: «La situazione è sotto controllo».',
-  ytBrief: 'Omicidi di massa e stragi inesplicabili in tutto il mondo. Cosa sta succedendo?'
- };
- var SP_RUBRICHE = [['', 'Tutti'], ['errata corrige', 'Errata Corrige'], ['il termometro', 'Il Termometro']];
  var SP_STAMPS = {'errata corrige': 'CORRETTO', 'il termometro': 'BOCCIATI'};
- var SP_LOGO = '<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" width="64" height="64" x="0" y="0" viewBox="0 0 512 512" xml:space="preserve"><g><path fill="#c8102e" fill-rule="evenodd" d="M308.68 27.97c16.16 0 30.78 6.49 41.41 17.01 9.1-6.92 20.44-11.03 32.74-11.03 29.82 0 54.03 24.18 54.03 54.03 0 12.44-4.22 23.9-11.28 33.02 2.95 5.95 4.59 12.67 4.59 19.76 0 24.72-20.04 44.76-44.76 44.76-5.75 0-11.28-1.08-16.33-3.06-8.5 15.45-24.92 25.91-43.8 25.91-21.06 0-39.06-13.04-46.4-31.49-29.25-3.43-51.93-28.32-51.93-58.48 0-20.04 10.01-37.76 25.29-48.39 7.26-24.33 29.8-42.04 56.44-42.04M142.23 149.15c12.25 0 23.33 4.9 31.41 12.9a40.83 40.83 0 0 1 24.8-8.36c22.65 0 40.99 18.34 40.99 40.96 0 9.44-3.2 18.11-8.56 25.03 2.24 4.54 3.49 9.61 3.49 15 0 18.74-15.19 33.96-33.96 33.96a33.8 33.8 0 0 1-12.36-2.35c-6.46 11.74-18.91 19.67-33.22 19.67-15.96 0-29.62-9.89-35.18-23.9-22.2-2.61-39.4-21.46-39.4-44.36 0-15.19 7.6-28.6 19.19-36.68 5.5-18.43 22.59-31.87 42.8-31.87" clip-rule="evenodd" opacity="1" data-original="#99cc67"/><path fill="#000000" d="M181.75 263.22a43.7 43.7 0 0 0 2.95-17.32c-11.42 4.76-24.24 7.2-38.92 7.23-7.43.03-16.61-2.21-23.53-5.61.88 4.71 2.13 7.11 4.05 12.39 2.32 5.61 6.26 10.37 11.23 13.75 14.79 10.02 35.29 5.32 44.22-10.44m-72.88-11.43c-1.05-4.71-1.39-9.33-.88-14.51-9.72-9.81-15.39-23.07-16.55-36.94-9.78 18.85-1.9 42.35 17.43 51.45m-2.38-69.87c.09.74.03 1.5-.14 2.27-4.79 21.69 5.39 45.78 27.1 52.84 10.03 3.26 21 2.75 30.67-1.36-16.13-.85-31.01-10.91-35.55-25.2-4.17-13.21.62-27.69 9.81-38.01 4.9-5.53 11.25-10.18 18.79-13.29-20.12-8.69-43.71 1.69-50.68 22.75m98.64-20.61c15.22 8.5 21.66 24.66 18.43 41.27 2.35 1.25 4.54 2.78 6.49 4.59 7.8-19.64-4.17-41.75-24.92-45.86m19.65 61.77c-1.73-3.09-3-4.96-5.95-7.03-4.51 8.67-11.57 16.53-20.78 22.71.62 4.25.79 8.53.51 12.76-.2 2.69-.6 5.39-1.16 8.02.11.65.23 1.3.34 1.93 21.37 2 35.83-19.94 27.04-38.39m-16.22-18.31c.94-3.2 1.42-4.31 1.73-7.8 1.56-16.33-10.29-27.3-30.16-27.98-30.02-1.05-47.76 27.81-34.81 43.4 1.16-19.56 26.36-30.27 42.75-21.91 8.11 4.17 13.66 12.44 12.5 25.68-.11 1.39-.45 1.96-.96 3.09 3.94-4.25 7.08-9.18 8.95-14.48m-21.82 8.07c-.06-10.52-8.42-12.76-16.38-10.57-8.7 2.38-14.31 9.21-8.7 19.05 9.2 1.59 18.64-1.59 25.08-8.48m-44.51-70.72c11.71 0 22.96 4 32 11.11 31.78-18.6 72.2 4.22 72.2 41.39 0 9.27-2.66 18.23-7.6 25.88 9.95 26.99-10.43 55.76-39.34 55.08.96 11.34.74 22.59-.54 33.87l27.04-8.99 8.62-38.44c1.53-6.97 11.34-7.34 13.46-.57l7.34 23.47c27.72-21.71 29.68-52.89 31.46-84.56-5.27-4.85-9.64-10.66-12.78-17.18-43.46-7.85-67.27-55.87-46.66-95.3a66.4 66.4 0 0 1 18.85-22.22c4.34-12.78 12.5-23.78 23.1-31.69 24.41-18.17 57.97-17.21 81.3 2.1 24.07-14.91 55.25-11.34 75.29 8.73 20.61 20.58 23.75 52.84 7.6 76.99 14.8 37.59-17.55 77.36-57.77 69.79-1.25-.23-2.47-.51-3.66-.82a57.07 57.07 0 0 1-25.65 20.49l16.41 14.97c5.19 4.71.96 13.69-6.55 11.91l-24.49-4.93c-2.41 21.15-7.37 42.41-19.98 61.68-14.14 21.66-37.73 40.37-77.73 52.7l-17.66 5.84 14.8 12.7c5.56 4.73.94 13.72-6.12 12.1l-41.87-9.78c-3.06 1.79-6.01 3.69-8.79 5.67-12.81 9.13-22.82 20.55-27.13 36.71-3.15 11.88-3.26 26.9 1.39 44.65h.03c5.16 20.3-16.89 36.91-34.98 26.16-5.3-3.15-9.64-8.62-11-15.11-5.27-20.81-6.29-39.09-4.05-55.19 2.21-15.7 7.46-29.28 14.85-41.13l-1.53-46.38c-.26-7.46 10.12-10.15 13.38-2.95l11.03 22.96 6.41-5.24c2.95-7.14 5.22-14.34 6.83-21.57 1.84-8.08 2.81-16.04 3-24.15-16.19-.74-30.64-10.23-37.9-24.52-33.56-6.66-51.76-43.91-35.72-74.55 3.52-6.72 8.42-12.56 14.34-17.12a52.03 52.03 0 0 1 17.97-24.35c8.64-6.41 19.29-10.21 30.8-10.21m43.6 138.33a44.94 44.94 0 0 1-19.11 10.86c-.08 9.67-1.22 19.28-3.34 28.77-1.9 8.42-4.62 16.81-8.14 25.17a7 7 0 0 1-2.44 3.43c-4.9 3.66-9.33 7.43-13.52 11.68-3.37 3.34-9.16 2.47-11.25-1.93l-.88-1.84.48 14.88c.17 1.53-.2 3.12-1.11 4.54-16.89 25.8-18.23 55.36-10.01 87.68 2.13 8.36 13.32 9.86 17.66 2.55a9.5 9.5 0 0 0 1.05-7.34h.03c-10.54-41.13-1.05-73.19 31.15-96.18 4-2.83 8.14-5.41 12.36-7.8a7.2 7.2 0 0 1 5.05-.74l16.64 3.91c-1.53-1.33-3.09-2.35-3.91-4.37-1.45-3.6.28-7.65 3.86-9.13 9.35-3.8 20.18-7.43 29.65-10.35 36.43-11.25 57.63-27.89 70.13-47.03 12.56-19.16 16.61-41.24 18.54-62.99h.03c.37-4.11 4.25-7.03 8.31-6.24l7.85 1.59-4.88-4.45c-10.43.88-20.64-1.13-29.68-5.58-.94 14.77-2.44 30.13-7.37 44.93-5.98 17.86-16.81 34.41-37.28 47.25-4.31 2.89-9.44.74-10.77-3.57l-2.41-7.68-3.74 16.7c-.99 4.48-5.05 5.36-9.24 6.8-11.48 3.86-25.14 7.82-36.23 12.56-5.73 2.58-10.91-2.32-9.92-7.54 2.41-12.86 3.23-25.47 2.44-38.54M362.8 179.4c3.4-8.65 4.73-17.94 3.91-27.13-15.36 6.94-33 10.54-53.32 10.63-11 .03-24.12-3.63-33.85-9.16.54 6.8 2.81 13.04 5.84 20.49 13.81 33.97 59.96 36.32 77.42 5.17m-94.82-12.28c-2.27-7.82-3.09-15.17-2.1-23.73-14.63-14.34-22.34-34.64-22.22-55.28-19.9 27.62-8 67.16 24.32 79.01m-8.7-96.15c.14.88.14 1.81-.06 2.75-6.58 29.71 7.43 62.59 37.19 72.26 17.04 5.53 35.74 3.12 50.85-6.49-23.16 3-47.74-10.03-54.45-31.32-5.24-16.67.82-34.89 12.47-47.99 7.26-8.14 17.01-14.83 28.71-18.68-28.31-15.86-64.68-1.88-74.71 29.47M378.9 41.09c27.55 8.28 40.37 32.51 34.53 58.59 4.45 2.13 8.45 5.07 11.82 8.65 15.56-32.29-9.67-70.24-46.35-67.24m40.59 83.31c-2.83-5.07-5.39-8.42-10.69-11.4-5.92 12.5-15.9 23.61-28.94 32.09a73.6 73.6 0 0 1-1.79 32.71c31.02 5.99 54.63-25.9 41.42-53.4m-21.2-22.42c1.28-4.45 1.93-5.92 2.38-10.71 2.15-22.76-14.31-38.38-41.92-39.32-44.08-1.53-69.17 43.97-43.57 64.97-2.13-17.06 10.63-30.19 26.33-34.47 8.93-2.47 18.74-2.01 26.62 2.04 9.92 5.07 16.72 15.28 15.28 31.69-.28 3.32-5.7 12.08-7.51 14.71 10.37-7.59 18.42-17.63 22.39-28.91m-28.72 10.89c.23-8.45-3.06-13.55-7.8-15.96-13.55-6.94-43.23 4.79-28.89 28.29 13.5 2.66 27.51-1.99 36.69-12.33" opacity="1" data-original="#336667"/></g></svg>';
 
  function el(tag, cls, text) {
   var e = document.createElement(tag);
@@ -4562,16 +4788,19 @@ if (document.readyState === 'loading') {
   return e;
  }
  function txt(e) { return e ? e.textContent.replace(/\s+/g, ' ').trim() : ''; }
- function code() {
-  var c = 'abcdefghjkmnpqrstuvwxyz23456789', s = '';
-  for (var i = 0; i < 4; i++) s += c.charAt(Math.floor(Math.random() * c.length));
-  return s;
+ function link(href, text) {
+  var a = el('a', '', text);
+  a.href = href;
+  return a;
  }
  function rubrica(s) {
   var m = s.match(/^\s*\[([^\]]+)\]\s*/);
   if (!m) return {label: '', key: '', rest: s.trim()};
   var label = m[1].trim();
   return {label: label, key: label.toLowerCase(), rest: s.replace(m[0], '').trim()};
+ }
+ function tag(conf, r) {
+  return el('span', 'gm-tag gm-tag-' + r.key.replace(/[^a-z0-9]+/g, '-'), conf.k === 'sw' && r.key === 'comunicato' ? 'Comunicato ufficiale' : r.label);
  }
  function vuoto(n) { return n.nodeType === 3 ? !n.textContent.trim() : n.nodeName === 'BR'; }
 
@@ -4601,63 +4830,22 @@ if (document.readyState === 'loading') {
   }
   return out;
  }
- function firma(info, fallback, extra) {
+ function firma(info, extra) {
   var by = el('div', 'gm-by');
   if (info.firma) by.appendChild(el('b', '', info.firma));
-  var d = info.data || fallback;
-  if (d) by.appendChild(el('span', '', (info.firma ? '· ' : '') + d));
+  if (info.data) by.appendChild(el('span', '', (info.firma ? '· ' : '') + info.data));
   if (extra) by.appendChild(el('span', '', '· ' + extra));
   return by;
  }
- function bgUrl(src) { return 'url("' + src.replace(/"/g, '%22') + '")'; }
- function link(href, text) {
-  var a = el('a', '', text);
-  a.href = href;
-  return a;
- }
-
- /* Testate */
- function testata(conf, isList) {
-  var h = el('div');
-  h.id = 'gm-head';
-  if (conf.k === 'sp') {
-   var dom = ['laspina-' + code() + '.yb', 'spina-mirror' + Math.floor(Math.random() * 9 + 1) + '.yb', 'lsp-' + code() + '.yb', 'nelfianco-' + code() + '.yb'];
-   var v = TXT.spVoto;
-   h.innerHTML = '<div class="sp-bar"><span class="sp-dots"><i></i><i></i><i></i></span><span class="sp-url">&#128274; <b></b>/ultime</span></div>'
-    + '<div class="sp-mast"><div class="sp-logo">' + SP_LOGO + '</div><div class="sp-title"><div class="sp-name">La <em>Spina</em></div><div class="sp-motto">Nel fianco dell\'Associazione Hunter. Da sempre al vostro servizio.</div></div></div>'
-    + '<div class="sp-term"><div class="sp-term-lbl">Il Termometro del mese</div><div class="sp-term-val"><span></span><small>/10</small></div><div class="sp-term-side"><div class="sp-term-bar"><span></span></div><div class="sp-term-note"></div></div></div>'
-    + '<div class="gm-nav"></div>'
-    + '<div class="sp-ticker"><b>ULTIM\'ORA</b><span></span></div>';
-   h.querySelector('.sp-url b').textContent = dom[Math.floor(Math.random() * dom.length)];
-   h.querySelector('.sp-term-val span').textContent = String(v).replace('.', ',');
-   h.querySelector('.sp-term-bar span').style.width = Math.max(0, Math.min(100, v * 10)) + '%';
-   h.querySelector('.sp-term-note').textContent = TXT.spNota;
-   h.querySelector('.sp-ticker span').textContent = TXT.spTicker;
-  } else if (conf.k === 'sw') {
-   h.innerHTML = '<div class="sw-util"><span>Edizione online</span><span class="sw-sub">Abbonati</span></div>'
-    + '<a class="sw-bar" href="' + conf.home + '"><span class="sw-seal"><i class="HI-AH"></i></span><span><span class="sw-name">Swardani Post</span><span class="sw-motto">Portatori della Verità</span></span></a>'
-    + '<div class="sw-edition"><b class="gm-edition">Swardani</b> · Aggiornato all\'ultima edizione</div>'
-    + '<div class="gm-nav"></div>'
-    + '<div class="sw-brief"><b>In breve</b><span></span></div>';
-   h.querySelector('.sw-brief span').textContent = TXT.swBrief;
-  } else {
-   h.innerHTML = '<div class="yt-util"><span>Edizione online · <b class="gm-edition">York Shin</b></span><span class="yt-sub">Abbonati</span></div>'
-    + '<div class="yt-mast"><a class="yt-name" href="' + conf.home + '">York Shin Times</a><div class="yt-dateline">Sede centrale: York Shin<b>Accuratezza e prudenza</b>Redazioni in tutta Yorbian</div></div>'
-    + '<div class="gm-nav"></div>'
-    + '<div class="yt-brief"><b>In primo piano</b><span></span></div>';
-   h.querySelector('.yt-brief span').textContent = TXT.ytBrief;
-  }
-  if (!isList) h.querySelector('.gm-nav').appendChild(link(conf.home, conf.k === 'sp' ? 'Tutti gli articoli' : 'Torna alla home'));
-  return h;
- }
- function edizione(head, data) {
-  var e = head.querySelector('.gm-edition');
+ function edizione(conf, data) {
+  var e = document.getElementById(conf.k + '-edition');
   if (e && data) e.textContent = data;
  }
 
- /* Lista degli articoli */
- function lista(conf, ul, head) {
+ /* Lista degli articoli: la testata è quella della sezione */
+ function lista(conf, ul) {
   ul.classList.add('gm-list');
+  var head = document.getElementById(conf.k + '-head');
   var posts = ul.querySelectorAll('li.post');
   var rub = [], seen = {}, top = [];
   for (var i = 0; i < posts.length; i++) {
@@ -4670,20 +4858,19 @@ if (document.readyState === 'loading') {
    var r = rubrica(a.textContent);
    a.textContent = r.rest;
    var info = estrai(td);
-   if (i === 0) edizione(head, info.data);
+   if (i === 0) edizione(conf, info.data);
    if (r.key) {
     li.setAttribute('data-rubrica', r.key);
-    var tag = el('span', 'gm-tag gm-tag-' + r.key.replace(/[^a-z0-9]+/g, '-'), conf.k === 'sw' && r.key === 'comunicato' ? 'Comunicato ufficiale' : r.label);
-    det.insertBefore(tag, det.firstChild);
+    det.insertBefore(tag(conf, r), det.firstChild);
     if (conf.k === 'sp' && SP_STAMPS[r.key]) li.setAttribute('data-gm-stamp', SP_STAMPS[r.key]);
     if (!seen[r.key]) { seen[r.key] = true; rub.push([r.key, r.label]); }
    }
-   det.parentNode.insertBefore(firma(info, ''), det.nextSibling);
+   det.parentNode.insertBefore(firma(info), det.nextSibling);
    if (info.img || conf.k === 'sw') {
     var c = el('a', 'gm-cover');
     c.href = a.getAttribute('href');
     if (info.img) {
-     c.style.backgroundImage = bgUrl(info.img);
+     c.style.backgroundImage = 'url("' + info.img.replace(/"/g, '%22') + '")';
      li.classList.add('gm-img');
     } else {
      c.className += ' gm-noimg';
@@ -4701,27 +4888,33 @@ if (document.readyState === 'loading') {
    }
    top.push({t: r.rest, h: a.getAttribute('href'), v: parseInt(txt(li.querySelector('.option .views b')).replace(/\D/g, ''), 10) || 0, i: i});
   }
-  /* Filtri per rubrica */
-  var nav = head.querySelector('.gm-nav');
-  var voci = conf.k === 'sp' ? SP_RUBRICHE : [['', 'Home']].concat(rub);
-  for (var k = 0; k < voci.length; k++) {
-   var b = el('button', k === 0 ? 'gm-on' : '', voci[k][1]);
-   b.type = 'button';
-   b.setAttribute('data-r', voci[k][0]);
-   nav.appendChild(b);
+  if (!head) return;
+  /* Filtri: La Spina ha i pulsanti già nell'HTML, gli altri due li ricevono dalle rubriche trovate */
+  var nav = document.getElementById(conf.k + '-nav');
+  var on = conf.k + '-on';
+  if (nav) {
+   if (conf.k !== 'sp') {
+    for (var k = 0; k < rub.length; k++) {
+     var b = el('button', '', rub[k][1]);
+     b.type = 'button';
+     b.setAttribute('data-r', rub[k][0]);
+     nav.appendChild(b);
+    }
+   }
+   nav.addEventListener('click', function(ev) {
+    var b = ev.target.closest('button');
+    if (!b) return;
+    var sel = b.getAttribute('data-r');
+    var all = nav.querySelectorAll('button');
+    for (var x = 0; x < all.length; x++) all[x].classList.toggle(on, all[x] === b);
+    for (var j = 0; j < posts.length; j++) posts[j].classList.toggle('gm-hide', !!sel && posts[j].getAttribute('data-rubrica') !== sel);
+   });
   }
-  nav.onclick = function(ev) {
-   var b = ev.target.closest('button');
-   if (!b) return;
-   var sel = b.getAttribute('data-r');
-   var all = nav.querySelectorAll('button');
-   for (var x = 0; x < all.length; x++) all[x].classList.toggle('gm-on', all[x] === b);
-   for (var j = 0; j < posts.length; j++) posts[j].classList.toggle('gm-hide', !!sel && posts[j].getAttribute('data-rubrica') !== sel);
-  };
   /* I più letti, solo Swardani Post */
-  if (conf.k === 'sw' && top.length > 1) {
+  if (conf.k === 'sw' && top.length > 1 && !document.getElementById('sw-top5')) {
    top.sort(function(x, y) { return y.v - x.v || x.i - y.i; });
    var box = el('div', 'sw-top5');
+   box.id = 'sw-top5';
    box.appendChild(el('div', 'sw-top5-lbl', 'I più letti'));
    for (var t = 0; t < top.length && t < 5; t++) {
     var ln = link(top[t].h, '');
@@ -4733,11 +4926,22 @@ if (document.readyState === 'loading') {
   }
  }
 
- /* Pagina dell'articolo */
- function articolo(conf, ul, head) {
+ /* Pagina dell'articolo: testata minima */
+ function articolo(conf, ul) {
   ul.classList.add('gm-art');
+  var h = el('div', 'gm-mini');
+  h.id = 'gm-head';
+  var nm = el('a', 'gm-mini-name');
+  nm.href = conf.home;
+  nm.innerHTML = conf.name;
+  h.appendChild(nm);
+  var bk = link(conf.home, conf.back);
+  bk.className = 'gm-mini-back';
+  h.appendChild(bk);
+  ul.parentNode.insertBefore(h, ul);
   var strong = ul.querySelector('li.top .title strong');
   var r = rubrica(strong ? strong.textContent : document.title);
+  if (strong) strong.textContent = r.rest;
   if (!document.body.classList.contains('firstpage')) return;
   var main = ul.querySelector('li.post');
   var tb = main ? main.querySelector('table.color') : null;
@@ -4745,12 +4949,11 @@ if (document.readyState === 'loading') {
   if (!td) return;
   main.classList.add('gm-main');
   var info = estrai(td);
-  edizione(head, info.data);
   var parole = txt(td).split(' ').length;
   var box = el('div', 'gm-art-head');
-  if (r.key) box.appendChild(el('span', 'gm-tag gm-tag-' + r.key.replace(/[^a-z0-9]+/g, '-'), conf.k === 'sw' && r.key === 'comunicato' ? 'Comunicato ufficiale' : r.label));
+  if (r.key) box.appendChild(tag(conf, r));
   box.appendChild(el('h1', 'gm-title', r.rest));
-  box.appendChild(firma(info, '', 'Lettura: ' + Math.max(1, Math.round(parole / 200)) + ' min'));
+  box.appendChild(firma(info, 'Lettura: ' + Math.max(1, Math.round(parole / 200)) + ' min'));
   main.insertBefore(box, tb);
   if (info.img) {
    var hero = el('div', 'gm-hero');
@@ -4772,8 +4975,7 @@ if (document.readyState === 'loading') {
   if (!conf) return;
   var art = document.querySelector('ul.list-group.topic');
   var list = art ? null : document.querySelector('ul.list-group.article');
-  var target = art || list;
-  if (!target) return;
+  if (!art && !list) return;
   body.classList.add('gm-on');
   body.classList.add('gm-' + conf.k);
   var f = el('link');
@@ -4784,15 +4986,9 @@ if (document.readyState === 'loading') {
   c.rel = 'stylesheet';
   c.href = CSS_URL;
   document.head.appendChild(c);
-  var head = testata(conf, !art);
-  target.parentNode.insertBefore(head, target);
-  if (art) articolo(conf, art, head); else lista(conf, list, head);
+  if (art) articolo(conf, art); else lista(conf, list);
   var nt = document.querySelector('#nav-title span');
   if (nt) nt.textContent = rubrica(nt.textContent).rest;
-  if (art) {
-   var st = art.querySelector('li.top .title strong');
-   if (st) st.textContent = rubrica(st.textContent).rest;
-  }
  }
  if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', run);
  else run();
