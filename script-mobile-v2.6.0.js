@@ -1229,7 +1229,8 @@ if(t.sectionId){var sid=String(t.sectionId);outer:for(var g in config.coloriSezi
                 if (!BIRTHDAYS.length) return;
                 injectFA(); injectStyles();
 
-                if (data && data.users[userId]) return; // già fatto oggi su qualsiasi device
+                if (data && data.users[userId]) return; // già fatto (o rinunciato) oggi su qualsiasi device
+                if (ST.get('bgr-skip') === today) return; // ha scelto di non fare gli auguri oggi
                 if (ST.get('bgr-lastcheck') === today) { showBubble(BIRTHDAYS); return; }
                 ST.set('bgr-lastcheck', today);
                 showCard(BIRTHDAYS);
@@ -1349,6 +1350,7 @@ if(t.sectionId){var sid=String(t.sectionId);outer:for(var g in config.coloriSezi
                     + options
                     + '<div class="bgr-texts" id="bgr-texts"></div>'
                     + '<button class="bgr-btn" id="bgr-wish-btn"><i class="fa fa-heart"></i> Fai gli auguri!</button>'
+                    + '<button type="button" class="bgr-skip" id="bgr-skip-btn">Non voglio fare gli auguri, oggi</button>'
                     + '</div>'
                     + '</div>';
 
@@ -1359,6 +1361,7 @@ if(t.sectionId){var sid=String(t.sectionId);outer:for(var g in config.coloriSezi
                 var textsBox = document.getElementById('bgr-texts');
                 var pillsBox = document.getElementById('bgr-pills');
                 var switchEl = document.getElementById('bgr-switch');
+                var skipBtn  = document.getElementById('bgr-skip-btn');
                 var closeBtn = card.querySelector('.bgr-close');
                 var autoTimer = null;
                 var sending = false;
@@ -1430,7 +1433,7 @@ if(t.sectionId){var sid=String(t.sectionId);outer:for(var g in config.coloriSezi
                         texts = state.single.trim();
                     }
 
-                    var controls = card.querySelectorAll('textarea, .bgr-pill, .bgr-switch');
+                    var controls = card.querySelectorAll('textarea, .bgr-pill, .bgr-switch, .bgr-skip');
                     for (var c = 0; c < controls.length; c++) controls[c].disabled = true;
                     wishBtn.disabled = true;
                     wishBtn.innerHTML = '<i class="fa fa-spinner fa-spin"></i> Invio...';
@@ -1446,6 +1449,20 @@ if(t.sectionId){var sid=String(t.sectionId);outer:for(var g in config.coloriSezi
                             });
                         });
                     });
+                });
+
+                // Rinuncia per oggi: niente card né bollino fino a domani, su questo dispositivo
+                // (ST) e su tutti gli altri (Firebase, come se avesse già fatto gli auguri).
+                // Non tocca i tag: restano liberi per chi farà gli auguri.
+                skipBtn.addEventListener('click', function() {
+                    if (sending) return;
+                    stopAutoDismiss();
+                    sending = true;
+                    ST.set('bgr-skip', today);
+                    card._minimizing = true;
+                    card.style.animation = 'bgr-shrink .4s forwards';
+                    setTimeout(function() { if (card.parentNode) card.parentNode.removeChild(card); }, 400);
+                    markDone(userId);
                 });
 
                 if (autoDismiss) {
@@ -1497,6 +1514,8 @@ if(t.sectionId){var sid=String(t.sectionId);outer:for(var g in config.coloriSezi
             +'#bgr-card .bgr-btn{margin-top:10px;padding:9px 20px;background:transparent;color:#CFF09E;border:1.5px solid #CFF09E;border-radius:50px;font-family:Montserrat,inherit;font-weight:700;font-size:11px;cursor:pointer;align-self:flex-start;transition:.2s}'
             +'#bgr-card .bgr-btn:hover{background:#CFF09E;color:#0B486B}'
             +'#bgr-card .bgr-btn:disabled{opacity:.5;cursor:default}'
+            +'#bgr-card .bgr-skip{margin:4px 0 0;padding:6px 2px;background:none;border:none;border-bottom:1px dashed rgba(143,190,186,.3);border-radius:0;color:rgba(143,190,186,.6);font-family:Montserrat,inherit;font-size:11px;font-weight:600;letter-spacing:.5px;text-align:left;cursor:pointer;align-self:flex-start;-webkit-appearance:none;appearance:none}'
+            +'#bgr-card .bgr-skip:disabled{opacity:.5;cursor:default}'
             +'#bgr-bubble{position:fixed;bottom:24px;left:24px;z-index:9999;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#292354,#0B486B);color:#79BD9A;border:2px solid #79BD9A;font-size:22px;cursor:pointer;animation:bgr-bubbleIn .3s cubic-bezier(.22,1,.36,1) forwards;transition:.3s ease}'
             +'#bgr-bubble:hover{transform:scale(1.1)}';
         var s=document.createElement('style');s.id='bgr-styles';s.textContent=css;document.head.appendChild(s);
