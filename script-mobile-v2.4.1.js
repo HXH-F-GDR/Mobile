@@ -1265,8 +1265,12 @@ if(t.sectionId){var sid=String(t.sectionId);outer:for(var g in config.coloriSezi
                 else if (dateSkewed()) BIRTHDAYS = [];
                 else BIRTHDAYS = DOM_BIRTHDAYS;
 
+                // Chi compie gli anni oggi non fa gli auguri a se stesso, ma vede comunque
+                // la card per gli altri festeggiati del giorno (se ce ne sono)
+                var others = [];
+                for (var i=0;i<BIRTHDAYS.length;i++){if(BIRTHDAYS[i].id!=Commons.user.id)others.push(BIRTHDAYS[i]);}
+                BIRTHDAYS = others;
                 if (!BIRTHDAYS.length) return;
-                for (var i=0;i<BIRTHDAYS.length;i++){if(BIRTHDAYS[i].id==Commons.user.id)return;}
                 injectFA(); injectStyles();
 
                 if (data && data.users[userId]) return; // già fatto oggi su qualsiasi device
