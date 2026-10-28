@@ -4753,6 +4753,176 @@ if (document.readyState === 'loading') {
 })();
 
 // ═══════════════════════════════════════════════════════════════
+// REDAZIONI: FIRMA E DATA NELL'EDITOR (mobile) — copia di redazioni-firme-v1.1.0.js
+// Solo la parte dell'editor: firma e data in pagina le mostra gia' il blocco
+// REDAZIONI qui sopra. REDAZIONI_FIRME e' la stessa configurazione che sul
+// desktop sta nell'HTML del forum: se cambi le firme, cambiale in tutti e due.
+// ═══════════════════════════════════════════════════════════════
+;(function() {
+  if (window.__hxhRedazioniFirmeMobile) return;
+  window.__hxhRedazioniFirmeMobile = true;
+
+  var REDAZIONI_FIRME = window.REDAZIONI_FIRME || {
+    '65121577': { nome: 'La Spina', firme: ['Spina Dorsale', 'Alla Spina'], libera: false },
+    '65121579': { nome: 'Swardani Post', firme: ['Ambrose Veritas', 'Ophelia Stroud', 'Gideon Marsh'], libera: true },
+    '65121578': { nome: 'York Shin Times', firme: ['Axel Quinn', 'Beatrisse Lindholm'], libera: true }
+  };
+
+  var HEAD_RE = /^[ \t]*(Firma|Data)[ \t]*:[ \t]*([^\r\n]*)(\r?\n|$)/i;
+
+  function parseData(str) {
+    var s = String(str || '').trim(), m;
+    if ((m = s.match(/^(\d{1,2})[\/.\-](\d{1,2})[\/.\-](\d{4})$/))) return valid(+m[1], +m[2], +m[3]);
+    if ((m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/))) return valid(+m[3], +m[2], +m[1]);
+    return null;
+  }
+  function valid(d, m, y) {
+    if (m < 1 || m > 12 || d < 1 || d > 31) return null;
+    var dt = new Date(y, m - 1, d);
+    if (dt.getMonth() !== m - 1) return null;
+    return {d: d, m: m, y: y};
+  }
+  function pad(n) { return n < 10 ? '0' + n : '' + n; }
+  function toIso(o) { return o ? o.y + '-' + pad(o.m) + '-' + pad(o.d) : ''; }
+  function toLine(o) { return o ? pad(o.d) + '/' + pad(o.m) + '/' + o.y : ''; }
+  function store(key, val) {
+    try { if (val === undefined) return localStorage.getItem(key); localStorage.setItem(key, val); } catch (e) {}
+    return null;
+  }
+  function readHead(text) {
+    var out = {firma: '', data: ''}, v = String(text || ''), m, guard = 0;
+    while ((m = v.match(HEAD_RE)) && guard++ < 4) {
+      out[m[1].toLowerCase()] = m[2].trim();
+      v = v.slice(m[0].length);
+    }
+    out.rest = v;
+    return out;
+  }
+  function writeHead(ta, firma, data) {
+    var h = readHead(ta.value), lines = '';
+    if (firma) lines += 'Firma: ' + firma + '\n';
+    if (data) lines += 'Data: ' + data + '\n';
+    ta.value = lines + h.rest;
+  }
+
+  /* Sezione: dalla classe f<id> del body oppure dal campo f del form */
+  function config(ta) {
+    var form = ta.form;
+    var fid = form && form.elements.f ? String(form.elements.f.value) : '';
+    for (var id in REDAZIONI_FIRME) {
+      if (document.body.classList.contains('f' + id) || fid === id) { REDAZIONI_FIRME[id].id = id; return REDAZIONI_FIRME[id]; }
+    }
+    return null;
+  }
+  /* Nuova discussione: CODE=00 nel form (le modifiche non riempiono firma e data dall'ultima volta) */
+  function isNewTopic(ta) {
+    var form = ta.form;
+    if (form && form.elements.CODE) return String(form.elements.CODE.value) === '00';
+    return document.body.classList.contains('new-topic');
+  }
+
+  function initEditor() {
+    if (document.getElementById('rdz-firma')) return true;
+    var ta = document.querySelector('textarea[name="Post"], textarea#Post');
+    var title = document.querySelector('input[name="TopicTitle"], #TopicTitle');
+    if (!ta || !title) return false;
+    var cfg = config(ta);
+    if (!cfg) return true;
+
+    var firme = cfg.firme || [];
+    var libera = !!cfg.libera;
+    var key = 'rdz_firma_' + cfg.id;
+    var dkey = 'rdz_data_' + cfg.id;
+    var nuovo = isNewTopic(ta);
+
+    var box = document.createElement('div');
+    box.id = 'rdz-firma';
+    box.style.cssText = 'display:flex;flex-direction:column;align-items:stretch;gap:6px;box-sizing:border-box;width:100%;margin:0 0 8px;padding:8px 10px;border:1px dashed #888;border-radius:6px;font-size:13px;text-align:left;';
+    function riga() {
+      var r = document.createElement('div');
+      r.style.cssText = 'display:flex;align-items:center;gap:8px;';
+      box.appendChild(r);
+      return r;
+    }
+    function etichetta(t) {
+      var l = document.createElement('label');
+      l.textContent = t;
+      l.style.cssText = 'flex:0 0 74px;font-weight:bold;margin:0;';
+      return l;
+    }
+    var stile = 'flex:1;min-width:0;box-sizing:border-box;padding:4px 6px;font-size:14px;';
+    var sel = document.createElement('select');
+    sel.style.cssText = stile;
+    var other = document.createElement('input');
+    other.type = 'text';
+    other.placeholder = 'Nome con cui firmare (es. il tuo PG)';
+    other.maxLength = 60;
+    other.style.cssText = 'display:none;width:100%;box-sizing:border-box;padding:4px 6px;font-size:14px;';
+    var date = document.createElement('input');
+    date.type = 'date';
+    date.min = '1900-01-01';
+    date.style.cssText = stile;
+    var hint = document.createElement('span');
+    hint.style.cssText = 'font-size:11px;opacity:0.75;';
+    hint.textContent = 'Firma e data vengono salvate come prime righe del testo e mostrate al posto di nickname e data reale. Lascia la data vuota per usare quella di pubblicazione.';
+
+    function opt(value, text) {
+      var o = document.createElement('option');
+      o.value = value; o.textContent = text;
+      sel.appendChild(o);
+    }
+    if (libera || !firme.length) opt('', '— Nessuna (mostra il nickname) —');
+    for (var i = 0; i < firme.length; i++) opt(firme[i], firme[i]);
+    if (libera) opt('__altro__', 'Altro…');
+
+    function current() { return sel.value === '__altro__' ? other.value.trim() : sel.value; }
+    function apply() {
+      other.style.display = sel.value === '__altro__' ? 'block' : 'none';
+      var name = current();
+      writeHead(ta, name, toLine(parseData(date.value)));
+      if (name) store(key, name);
+      store(dkey, date.value || '');
+      try { ta.dispatchEvent(new Event('input', {bubbles: true})); } catch (e) {}
+    }
+
+    var head = readHead(ta.value);
+    var existing = head.firma;
+    date.value = toIso(head.data ? parseData(head.data) : (nuovo ? parseData(store(dkey) || '') : null));
+    var start = existing || (nuovo ? (store(key) || '') : '');
+    if (!libera && firme.length && start !== existing && firme.indexOf(start) === -1) start = '';
+    if (!libera && firme.length && !start) start = firme[0];
+    if (start && firme.indexOf(start) !== -1) sel.value = start;
+    else if (start && libera) { sel.value = '__altro__'; other.value = start; }
+    else if (start) { opt(start, start); sel.value = start; }
+    else sel.value = '';
+
+    sel.onchange = apply;
+    other.oninput = apply;
+    date.onchange = apply;
+    date.oninput = apply;
+
+    var r1 = riga();
+    r1.appendChild(etichetta('Firma come:'));
+    r1.appendChild(sel);
+    box.appendChild(other);
+    var r2 = riga();
+    r2.appendChild(etichetta('Data:'));
+    r2.appendChild(date);
+    box.appendChild(hint);
+    ta.parentNode.insertBefore(box, ta);
+    apply();
+    return true;
+  }
+
+  /* L'editor mobile puo' comparire dopo l'avvio: riprova per ~10s */
+  var tentativi = 0;
+  (function prova() {
+    if (initEditor() || ++tentativi > 20) return;
+    setTimeout(prova, 500);
+  })();
+})();
+
+// ═══════════════════════════════════════════════════════════════
 // POST AUTOMATICI SU HUNTERNET (mobile)
 // 1. Redazioni: copia di redazioni-autopost-v1.2.0.js (se gira anche la
 //    versione desktop/jsDelivr, ne parte una sola).
