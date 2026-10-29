@@ -4531,7 +4531,7 @@ if (document.readyState === 'loading') {
 // ═══════════════════════════════════════════════════════════════
 /* Redazioni in versione mobile (La Spina, York Shin Times, Swardani Post). Nella lista usa la testata della sezione, nella pagina dell'articolo (dove l'HTML della sezione non arriva) mette una testata minima */
 (function() {
- var CSS_URL = 'https://cdn.jsdelivr.net/gh/HXH-F-GDR/CSS@main/redazioni-v1.0.4.css';
+ var CSS_URL = 'https://cdn.jsdelivr.net/gh/HXH-F-GDR/CSS@main/redazioni-v1.0.5.css';
  var SEZ = {
   f65121577: {k: 'sp', home: '/?f=65121577', name: 'La <em>Spina</em>', back: 'Tutti gli articoli', fonts: 'family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Libre+Franklin:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&family=Special+Elite'},
   f65121578: {k: 'yt', home: '/?f=65121578', name: 'York Shin Times', back: 'Torna alla home', fonts: 'family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Libre+Franklin:wght@400;500;600;700&family=Manufacturing+Consent'},
@@ -4725,6 +4725,22 @@ if (document.readyState === 'loading') {
   if (altri.length > 1) ul.insertBefore(el('li', 'gm-comm-lbl', 'Commenti'), altri[1]);
  }
 
+ /* Pulsanti di ForumFree (nuova discussione, rispondi): li.top va prima di tutto il giornale, li.bottom dopo */
+ function bottoni(conf, ul) {
+  var box = ul.parentNode;
+  var inizio = document.getElementById('gm-head') || document.getElementById(conf.k + '-head') || ul;
+  while (inizio.parentNode && inizio.parentNode !== box) inizio = inizio.parentNode;
+  if (inizio.parentNode !== box) inizio = ul;
+  function sposta(li, cls, prima) {
+   if (!li) return;
+   var u = el('ul', 'list-group gm-btns ' + cls);
+   u.appendChild(li);
+   box.insertBefore(u, prima ? inizio : ul.nextSibling);
+  }
+  sposta(ul.querySelector(':scope > li.top'), 'gm-btns-top', true);
+  sposta(ul.querySelector(':scope > li.bottom'), 'gm-btns-bottom', false);
+ }
+
  function run() {
   var body = document.body;
   if (!body || !body.classList.contains('ffm') || body.classList.contains('gm-on')) return;
@@ -4745,6 +4761,7 @@ if (document.readyState === 'loading') {
   c.href = CSS_URL;
   document.head.appendChild(c);
   if (art) articolo(conf, art); else lista(conf, list);
+  bottoni(conf, art || list);
   var nt = document.querySelector('#nav-title span');
   if (nt) nt.textContent = rubrica(nt.textContent).rest;
  }
