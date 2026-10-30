@@ -155,11 +155,6 @@ if (HXH_DOMAINS.indexOf(location.hostname) === -1) return;
     return out;
   }
 
-  function isUpper(c) {
-    var res = !!c && c !== c.toLowerCase();
-    return res;
-  }
-
   function escapeHtml(s) {
     var out = s.split('&').join('&amp;').split('<').join('&lt;').split('>').join('&gt;');
     return out;
@@ -335,25 +330,71 @@ if (HXH_DOMAINS.indexOf(location.hostname) === -1) return;
     return out;
   }
 
-  /* Ripiego se questo script parte DOPO l'originale:
-     toglie i tooltip finiti dentro altre parole. */
+  /* lettere attaccate subito prima / subito dopo il tooltip (stessa parola) */
+  function wordBefore(a) {
+    var prev = a.previousSibling;
+    var s = (prev && prev.nodeType === 3) ? prev.nodeValue : '';
+    var i = s.length;
+    while (i > 0 && isWordChar(s.charAt(i - 1))) { i--; }
+    var res = s.slice(i);
+    return res;
+  }
+  function wordAfter(a) {
+    var next = a.nextSibling;
+    var s = (next && next.nodeType === 3) ? next.nodeValue : '';
+    var i = 0;
+    while (i < s.length && isWordChar(s.charAt(i))) { i++; }
+    var res = s.slice(0, i);
+    return res;
+  }
+  /* tutto maiuscolo (e con almeno una lettera) */
+  function isAllUpper(s) {
+    var res = !!s && s === s.toUpperCase() && s !== s.toLowerCase();
+    return res;
+  }
+
+  /* la parola e' a inizio frase? (inizio post, dopo un a capo,
+     dopo . ! ? … oppure dopo « " — che aprono un dialogo) */
+  var BLOCKS = { BR: 1, DIV: 1, P: 1, LI: 1, BLOCKQUOTE: 1, H1: 1, H2: 1, H3: 1, H4: 1 };
+  function isSentenceStart(a) {
+    var prev = a.previousSibling;
+    while (prev && prev.nodeType === 3 && !prev.nodeValue.trim()) { prev = prev.previousSibling; }
+    if (prev && prev.nodeType === 1 && BLOCKS[prev.nodeName.toUpperCase()]) { return true; }
+    var post = a.closest ? a.closest('.color') : null;
+    if (!post) { return false; }
+    var r = document.createRange();
+    r.setStart(post, 0);
+    r.setEndBefore(a);
+    var before = r.toString().replace(/\s+$/, '');
+    var res = !before || /[.!?…«"“—–]$/.test(before);
+    return res;
+  }
+
+  /* Ripiego se questo script parte DOPO che l'originale ha gia' lavorato
+     sui post: toglie i tooltip finiti dentro altre parole e prova a
+     ricostruire le maiuscole com'erano (l'originale ha messo la parola
+     scritta come nelle impostazioni, es. "Indi"). */
   function cleanupExisting() {
     var anchors = document.querySelectorAll('.color a.keyword_tooltip');
     for (var i = 0; i < anchors.length; i++) {
       var a = anchors[i];
-      var prev = a.previousSibling;
-      var next = a.nextSibling;
-      var pc = (prev && prev.nodeType === 3) ? prev.nodeValue.charAt(prev.nodeValue.length - 1) : '';
-      var nc = (next && next.nodeType === 3) ? next.nodeValue.charAt(0) : '';
-      if (!isWordChar(pc) && !isWordChar(nc)) { continue; }
+      var before = wordBefore(a);
+      var after = wordAfter(a);
+      if (!before && !after) { continue; }
 
-      /* l'originale ha sostituito il testo con la parola scritta come nelle
-         impostazioni ("QuIndi"): proviamo a ricostruire le maiuscole */
       var txt = a.textContent;
-      if (isWordChar(pc)) {
-        txt = (isUpper(pc) && (isUpper(nc) || !isWordChar(nc))) ? txt.toUpperCase() : txt.toLowerCase();
+      if (before) {
+        /* tooltip a meta' o in fondo alla parola: segue le lettere prima */
+        txt = (isAllUpper(before) && (!after || isAllUpper(after))) ? txt.toUpperCase() : txt.toLowerCase();
+      } else if (isAllUpper(after)) {
+        /* parola tutta in maiuscolo: INDICATIVAMENTE */
+        txt = txt.toUpperCase();
+      } else if (isSentenceStart(a)) {
+        /* inizio frase: Indicativamente */
+        txt = txt.charAt(0).toUpperCase() + txt.slice(1).toLowerCase();
       } else {
-        txt = txt.charAt(0) + txt.slice(1).toLowerCase();
+        /* in mezzo alla frase: indicativamente */
+        txt = txt.toLowerCase();
       }
       var parent = a.parentNode;
       parent.replaceChild(document.createTextNode(txt), a);
@@ -393,18 +434,10 @@ if (HXH_DOMAINS.indexOf(location.hostname) === -1) return;
     (document.head || document.documentElement).appendChild(ls);
   }
 
-  if (typeof window.replace_keywordtooltips === 'function') {
-    /* l'originale e' gia' passato */
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', cleanupExisting);
-    } else {
-      cleanupExisting();
-    }
-    return;
-  }
-
-  /* Trappola: quando l'originale definisce la sua funzione, la teniamo da parte
-     e al suo posto gli restituiamo la versione corretta. */
+  /* Trappola: la funzione dell'originale viene tenuta da parte e al suo
+     posto gli restituiamo la versione corretta. Se esiste gia' ma non ha
+     ancora girato sui post, la intercettiamo lo stesso: cosi' il testo
+     resta identico all'originale, maiuscole comprese. */
   var originalFn = null;
   function wrapper(str) {
     var out;
@@ -416,11 +449,29 @@ if (HXH_DOMAINS.indexOf(location.hostname) === -1) return;
     }
     return out;
   }
-  Object.defineProperty(window, 'replace_keywordtooltips', {
-    configurable: true,
-    get: function () { return originalFn ? wrapper : undefined; },
-    set: function (fn) { originalFn = fn; }
-  });
+
+  var alreadyDefined = typeof window.replace_keywordtooltips === 'function';
+  if (alreadyDefined) { originalFn = window.replace_keywordtooltips; }
+  try {
+    Object.defineProperty(window, 'replace_keywordtooltips', {
+      configurable: true,
+      get: function () { return originalFn ? wrapper : undefined; },
+      set: function (fn) { originalFn = fn; }
+    });
+  } catch (e) {
+    /* le funzioni dichiarate con "function nome()" non si possono ridefinire:
+       in quel caso basta sovrascriverla */
+    window.replace_keywordtooltips = wrapper;
+  }
+
+  if (alreadyDefined) {
+    /* se l'originale ha gia' lavorato su qualche post, lo sistemiamo */
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', cleanupExisting);
+    } else {
+      cleanupExisting();
+    }
+  }
 })();
 
 // ── LOGO SKIN: crea e popola logonataleffm e logohalloweenffm ──
