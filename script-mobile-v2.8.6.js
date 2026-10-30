@@ -4531,7 +4531,7 @@ if (document.readyState === 'loading') {
 // ═══════════════════════════════════════════════════════════════
 /* Redazioni in versione mobile (La Spina, York Shin Times, Swardani Post). Nella lista usa la testata della sezione, nella pagina dell'articolo (dove l'HTML della sezione non arriva) mette una testata minima */
 (function() {
- var CSS_URL = 'https://cdn.jsdelivr.net/gh/HXH-F-GDR/CSS@main/redazioni-v1.0.6.css';
+ var CSS_URL = 'https://cdn.jsdelivr.net/gh/HXH-F-GDR/CSS@main/redazioni-v1.0.5.css';
  var SEZ = {
   f65121577: {k: 'sp', home: '/?f=65121577', name: 'La <em>Spina</em>', back: 'Tutti gli articoli', fonts: 'family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Libre+Franklin:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&family=Special+Elite'},
   f65121578: {k: 'yt', home: '/?f=65121578', name: 'York Shin Times', back: 'Torna alla home', fonts: 'family=Fraunces:opsz,wght@9..144,700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Libre+Franklin:wght@400;500;600;700&family=Manufacturing+Consent'},
@@ -4600,6 +4600,15 @@ if (document.readyState === 'loading') {
   if (e && data) e.textContent = data;
  }
 
+ /* Articolo in evidenza: il primo visibile, anche con un filtro attivo */
+ function primo(posts) {
+  var done = false;
+  for (var j = 0; j < posts.length; j++) {
+   posts[j].classList.remove('gm-first');
+   if (!done && !posts[j].classList.contains('gm-hide')) { posts[j].classList.add('gm-first'); done = true; }
+  }
+ }
+
  /* Lista degli articoli: la testata è quella della sezione */
  function lista(conf, ul) {
   ul.classList.add('gm-list');
@@ -4646,6 +4655,7 @@ if (document.readyState === 'loading') {
    }
    top.push({t: r.rest, h: a.getAttribute('href'), v: parseInt(txt(li.querySelector('.option .views b')).replace(/\D/g, ''), 10) || 0, i: i});
   }
+  primo(posts);
   if (!head) return;
   /* Filtri: La Spina ha i pulsanti già nell'HTML, gli altri due li ricevono dalle rubriche trovate */
   var nav = document.getElementById(conf.k + '-nav');
@@ -4666,6 +4676,7 @@ if (document.readyState === 'loading') {
     var all = nav.querySelectorAll('button');
     for (var x = 0; x < all.length; x++) all[x].classList.toggle(on, all[x] === b);
     for (var j = 0; j < posts.length; j++) posts[j].classList.toggle('gm-hide', !!sel && posts[j].getAttribute('data-rubrica') !== sel);
+    primo(posts);
    });
   }
   /* I più letti, solo Swardani Post */
