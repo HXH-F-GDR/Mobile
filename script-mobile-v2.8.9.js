@@ -4869,7 +4869,7 @@ if (document.readyState === 'loading') {
   var REDAZIONI_FIRME = window.REDAZIONI_FIRME || {
     '65121577': { nome: 'La Spina', firme: ['Spina Dorsale', 'Alla Spina'], libera: false },
     '65121579': { nome: 'Swardani Post', firme: ['Ambrose Veritas', 'Ophelia Stroud', 'Gideon Marsh'], libera: true },
-    '65121578': { nome: 'York Shin Times', firme: ['Axel Quinn', 'Beatrisse Lindholm'], libera: true }
+    '65121578': { nome: 'York Shin Times', firme: ['Axel Quinn', 'Beatrixe Lindholm'], libera: true }
   };
 
   var HEAD_RE = /^[ \t]*(Firma|Data)[ \t]*:[ \t]*([^\r\n]*)(\r?\n|$)/i;
