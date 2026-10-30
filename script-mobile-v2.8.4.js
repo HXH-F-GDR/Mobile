@@ -4534,7 +4534,7 @@ if (document.readyState === 'loading') {
  var CSS_URL = 'https://cdn.jsdelivr.net/gh/HXH-F-GDR/CSS@main/redazioni-v1.0.5.css';
  var SEZ = {
   f65121577: {k: 'sp', home: '/?f=65121577', name: 'La <em>Spina</em>', back: 'Tutti gli articoli', fonts: 'family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Libre+Franklin:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&family=Special+Elite'},
-  f65121578: {k: 'yt', home: '/?f=65121578', name: 'York Shin Times', back: 'Torna alla home', fonts: 'family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Libre+Franklin:wght@400;500;600;700&family=Manufacturing+Consent'},
+  f65121578: {k: 'yt', home: '/?f=65121578', name: 'York Shin Times', back: 'Torna alla home', fonts: 'family=Fraunces:opsz,wght@9..144,700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Libre+Franklin:wght@400;500;600;700&family=Manufacturing+Consent'},
   f65121579: {k: 'sw', home: '/?f=65121579', name: 'Swardani Post', back: 'Torna alla home', fonts: 'family=Cinzel:wght@700;800&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@400;600;700'}
  };
  var SP_STAMPS = {'errata corrige': 'CORRETTO', 'il termometro': 'BOCCIATI'};
@@ -4721,8 +4721,33 @@ if (document.readyState === 'loading') {
    hero.appendChild(img);
    main.insertBefore(hero, tb);
   }
+  if (conf.k === 'yt') capolettera(td);
   var altri = ul.querySelectorAll('li.post');
   if (altri.length > 1) ul.insertBefore(el('li', 'gm-comm-lbl', 'Commenti'), altri[1]);
+ }
+
+ /* Capolettera, solo York Shin Times: la prima lettera del testo diventa grande */
+ function capolettera(td) {
+  if (td.querySelector('.yt-drop')) return;
+  if (!document.getElementById('gm-drop-css')) {
+   var st = el('style');
+   st.id = 'gm-drop-css';
+   st.textContent = '.gm-yt .gm-main .yt-drop {float: left!important; font-family: \'Fraunces\', serif!important; font-weight: 700!important; font-size: 4em!important; line-height: 0.82!important; color: #15191C!important; margin: 0.06em 0.1em 0 0!important; padding: 0!important}';
+   document.head.appendChild(st);
+  }
+  var walker = document.createTreeWalker(td, NodeFilter.SHOW_TEXT, null, false);
+  var node;
+  while ((node = walker.nextNode())) {
+   if (!node.nodeValue.trim()) continue;
+   var m = node.nodeValue.match(/^(\s*)([«"“‘'(\[]*[A-Za-zÀ-ÿ0-9])/);
+   if (!m) return;
+   var start = node.splitText(m[1].length);
+   start.splitText(m[2].length);
+   var span = el('span', 'yt-drop');
+   start.parentNode.insertBefore(span, start);
+   span.appendChild(start);
+   return;
+  }
  }
 
  /* Pulsanti di ForumFree (nuova discussione, rispondi): li.top va prima di tutto il giornale, li.bottom dopo */
