@@ -674,17 +674,24 @@ window.HxHFramework.utilities.waitFor = waitFor;
 
 // ── TOP FORUM ──
 // Stessa logica e stesso nodo Firebase della versione desktop: il record
-// topforum/AAAA-MM viene creato una sola volta (le rules impediscono di
-// sovrascriverlo), da chiunque arrivi prima, desktop o mobile.
+// topforum/<nodo>/AAAA-MM (nodo 'gdr' o 'prova' a seconda del forum) viene
+// creato una sola volta (le rules impediscono di sovrascriverlo), da chiunque
+// arrivi prima, desktop o mobile.
 // Su mobile la posizione si legge da .stats_list (link act=topforum).
 
 var TOPFORUM_URL       = 'https://spam-limitato-e-illimitato-default-rtdb.europe-west1.firebasedatabase.app';
 var TOPFORUM_SOGLIA    = 200;
-var TOPFORUM_CACHE_KEY = 'hxh-topforum';
+var TOPFORUM_NODI      = {
+    'hxhforumgdr.forumcommunity.net':         'gdr',
+    'graficaxskinxelaborazione.forumfree.it': 'prova'
+};
+var TOPFORUM_NODO      = TOPFORUM_NODI[location.hostname] || null;
+var TOPFORUM_CACHE_KEY = 'hxh-topforum-v2';
 var TOPFORUM_TEST_KEY  = 'hxh-topforum-test';
 
 window.HxHFramework.constants.TOPFORUM_FIREBASE_URL = TOPFORUM_URL;
 window.HxHFramework.constants.TOPFORUM_SOGLIA       = TOPFORUM_SOGLIA;
+window.HxHFramework.constants.TOPFORUM_NODO         = TOPFORUM_NODO;
 
 function topForumMese() {
     var formato = new Intl.DateTimeFormat('it-IT', { timeZone: 'Europe/Rome', year: 'numeric', month: '2-digit' });
@@ -765,7 +772,12 @@ function topForumScrivi(url, mese, pos, fine) {
 }
 
 function topForumCarica(mese, fine) {
-    var url = TOPFORUM_URL + '/topforum/' + mese + '.json';
+    if (!TOPFORUM_NODO) {
+        console.warn('[HxHFramework] topForum: dominio non riconosciuto (' + location.hostname + ')');
+        fine(topForumRisultato(mese, null));
+        return;
+    }
+    var url = TOPFORUM_URL + '/topforum/' + TOPFORUM_NODO + '/' + mese + '.json';
     topForumLeggiRecord(url, function(record) {
         if (record && typeof record.posizione === 'number') {
             topForumSalvaCache(mese, record);
@@ -811,6 +823,7 @@ function topForumSvuotaCache() { storageRemove(TOPFORUM_CACHE_KEY); }
 window.HxHFramework.topForum = {
     SOGLIA:      TOPFORUM_SOGLIA,
     get:         topForumGet,
+    NODO:        TOPFORUM_NODO,
     mese:        topForumMese,
     leggiPagina: topForumLeggiPagina,
     svuotaCache: topForumSvuotaCache,
@@ -824,7 +837,6 @@ topForumQuandoPronto(function() {
 });
 
 console.log('[HxHFramework] mobile — Loaded on ' + location.hostname);
-
 
 // ═══════════════════════════════════════════════════════════════
 // FILTERGRID
