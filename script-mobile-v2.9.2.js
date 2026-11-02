@@ -686,7 +686,7 @@ var TOPFORUM_NODI      = {
     'graficaxskinxelaborazione.forumfree.it': 'prova'
 };
 var TOPFORUM_NODO      = TOPFORUM_NODI[location.hostname] || null;
-var TOPFORUM_CACHE_KEY = 'hxh-topforum-v2';
+var TOPFORUM_CACHE_KEY = 'hxh-topforum-v3';
 var TOPFORUM_TEST_KEY  = 'hxh-topforum-test';
 
 window.HxHFramework.constants.TOPFORUM_FIREBASE_URL = TOPFORUM_URL;
@@ -709,7 +709,8 @@ function topForumMese() {
 function topForumLeggiPagina(doc) {
     doc = doc || document;
     var el = doc.querySelector('.stats_list a[href*="act=topforum"] span') || doc.querySelector('#top a b');
-    var pos = el ? parseInt(el.textContent, 10) : NaN;
+    // Solo cifre: ForumFree usa il punto come separatore delle migliaia (1.045)
+    var pos = el ? parseInt(el.textContent.replace(/\D/g, ''), 10) : NaN;
     var risultato = isNaN(pos) ? null : pos;
     return risultato;
 }
