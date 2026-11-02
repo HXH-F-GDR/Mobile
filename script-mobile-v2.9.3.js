@@ -1025,16 +1025,16 @@ window.filterGridConfig = {
     var ST = F.utilities.storage;
 
     var config = {
-        forumId:         '1082772',
-        sezioniEscluse:  [65111597, 65111833],
+        forumId:         '652861',
+        sezioniEscluse:  [9047230, 9159360],
         numTopics:       10,
         intervalloSlide: 5000,
         maxExpanded:     10,
         posizionamento:  '.tagboard',
-        coloriSezioni: {
-    'Ongame':  { ids: ['65114233','65114232','65114231','65114236'], className: 'echo-ongame' },
-    'Offgame': { ids: ['65114124','65112407','65112409'],            className: 'echo-offgame' },
-    'Extra':   { ids: ['65073571','65073572'],                       className: 'echo-extra' }
+        coloriSezioni: { 
+ "Ongame": { ids: ["9165335", "9165336", "9165337", "9165338", "9165339", "9165340", "9140324", "9165341", "9165342", "9165343", "9165344", "9165345", "9165346", "9165347", "9165348", "9165349", "9165350", "9165351", "9165352", "9165353", "9165354", "9165355", "9165356", "9165357", "9165358", "9165360", "9165359", "9165361", "9165362", "9165364", "9165363", "9165365", "9165366", "9165367", "9165368", "9165369", "9165370", "9165371", "9165372", "9165373", "9165374", "9165375", "9165376", "9165377", "9165378", "9165379", "9165380", "9165381", "9165382", "9165383", "9047228", "9051468", "9051469", "9136228", "9165388", "9165389", "9165390", "9165391", "9165392", "9165393", "9165394", "9165395", "9165396", "9165397", "9165398", "9165399", "9165400", "9165401", "9165402", "9165403"], className: "echo-ongame" }, 
+ "Offgame": { ids: ["9046710", "9046711", "9048046", "9165330", "9165331", "9165332", "9165333", "9058438", "9165406", "9165407", "9165334", "9165405", "9046712", "9165408", "9055689", "9047979", "9047980", "9051451", "9051456", "9148568", "9148569", "9047898", "9050655", "9079831", "9164024"], className: "echo-offgame" }, 
+ "Extra": { ids: ["9047229", "9114182", "9114210", "9114211", "9047230", "9159360", "9159465", "9159466"], className: "echo-extra" } 
 }
     };
 
@@ -1134,7 +1134,7 @@ if(t.sectionId){var sid=String(t.sectionId);outer:for(var g in config.coloriSezi
     window.TeamZoneConfig = {
         recruit: {
             enabled: true,
-            url:     'https://hxhforumgdr.forumcommunity.net/?t=61175237',
+            url:     'https://hxhforumgdr.forumcommunity.net/?t=63530388',
             text:    'Cerchiamo staff, proponiti <a href="{url}">QUI</a>'
         }
     };
@@ -1160,7 +1160,7 @@ if(t.sectionId){var sid=String(t.sectionId);outer:for(var g in config.coloriSezi
 ;(function() {
     var F  = window.HxHFramework;
     var ST = F.utilities.storage;
-    var SETTINGS = { sez: 65073571, topic: 81025561, toast_duration: 8000 };
+    var SETTINGS = { sez: 9047229, topic: 63530676, toast_duration: 8000 };
     var FB_URL = 'https://compleanni-4035c-default-rtdb.europe-west1.firebasedatabase.app/birthdays-done';
 
     // Lunghezza massima del messaggio personalizzato
@@ -1594,7 +1594,7 @@ if(t.sectionId){var sid=String(t.sectionId);outer:for(var g in config.coloriSezi
 // Quando esce una nuova versione dello script meteo, aggiorna solo URL_METEO.
 // ═══════════════════════════════════════════════════════════════
 ;(function() {
-    var URL_METEO = 'https://cdn.jsdelivr.net/gh/HXH-F-GDR/ScriptForumfree@main/meteo-v7.5.js';
+    var URL_METEO = 'https://cdn.jsdelivr.net/gh/HXH-F-GDR/ScriptForumfree@main/meteo-v8.2.js';
 
     function parti() {
         if (window.HxHMeteo) window.HxHMeteo.avvia({ mobile: true });
@@ -1638,7 +1638,7 @@ if(t.sectionId){var sid=String(t.sectionId);outer:for(var g in config.coloriSezi
     var DB_URL     = CFG.dbUrl || 'https://spam-limitato-e-illimitato-default-rtdb.europe-west1.firebasedatabase.app';
     var SEZIONE    = CFG.tabName || 'Task Staff';
     var MAX_TITOLO = 300;
-    var BOX_STAFF  = ['box_amministratore', 'box_founder', 'box_globalmod', 'box_gruppo1', 'box_gruppo2', 'box_gruppo3', 'box_gruppo4'];
+    var BOX_STAFF  = ['box_amministratore', 'box_founder', 'box_globalmod', 'box_gruppo1', 'box_gruppo2', 'box_gruppo3', 'box_gruppo4', 'box_gruppo14'];
 
     function isProfileStaff() {
         var pc = document.querySelector('ul.list-group.profile'); if (!pc) return false;
@@ -1852,10 +1852,10 @@ if(t.sectionId){var sid=String(t.sectionId);outer:for(var g in config.coloriSezi
     var SETTINGS = {
         sectionName: 'Schede PG',
         sections: {
-            attive:       { id: 65112407, label: 'Schede Attive' },
-            nonApprovate: { id: 65112406, label: 'Schede Non Approvate' },
-            congelate:    { id: 65112408, label: 'Schede Congelate' },
-            inattive:     { id: 65112409, label: 'Schede Inattive' }
+            attive:       { id: 9165331, label: 'Schede Attive' },
+            nonApprovate: { id: 9165330, label: 'Schede Non Approvate' },
+            congelate:    { id: 9165332, label: 'Schede Congelate' },
+            inattive:     { id: 9165333, label: 'Schede Inattive' }
         }
     };
 
