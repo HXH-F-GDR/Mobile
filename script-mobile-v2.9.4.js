@@ -1950,8 +1950,8 @@ if(t.sectionId){var sid=String(t.sectionId);outer:for(var g in config.coloriSezi
 
     // ---- CONFIG (dati modificabili) ----
     var CONFIG = {
-        TOPIC_ID: '81151008',
-        SECTION_ID: '65073571',
+        TOPIC_ID: '63531005',
+        SECTION_ID: '9047229',
         FIREBASE_DB_URL: 'https://greed-island-9c98e-default-rtdb.europe-west1.firebasedatabase.app',
         ENFORCE_TURN_RULE: true,
         POST_TO_TOPIC: true
@@ -4597,9 +4597,9 @@ if (document.readyState === 'loading') {
 (function() {
  var CSS_URL = 'https://cdn.jsdelivr.net/gh/HXH-F-GDR/CSS@main/redazioni-v1.0.6.css';
  var SEZ = {
-  f65121577: {k: 'sp', home: '/?f=65121577', name: 'La <em>Spina</em>', back: 'Tutti gli articoli', fonts: 'family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Libre+Franklin:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&family=Special+Elite'},
-  f65121578: {k: 'yt', home: '/?f=65121578', name: 'York Shin Times', back: 'Torna alla home', fonts: 'family=Fraunces:opsz,wght@9..144,700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Libre+Franklin:wght@400;500;600;700&family=Manufacturing+Consent'},
-  f65121579: {k: 'sw', home: '/?f=65121579', name: 'Swardani Post', back: 'Torna alla home', fonts: 'family=Cinzel:wght@700;800&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@400;600;700'}
+  f9165393: {k: 'sp', home: '/?f=9165393', name: 'La <em>Spina</em>', back: 'Tutti gli articoli', fonts: 'family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=Libre+Franklin:wght@400;500;700&family=IBM+Plex+Mono:wght@400;600&family=Special+Elite'},
+  f9165394: {k: 'yt', home: '/?f=9165394', name: 'York Shin Times', back: 'Torna alla home', fonts: 'family=Fraunces:opsz,wght@9..144,700&family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Libre+Franklin:wght@400;500;600;700&family=Manufacturing+Consent'},
+  f9165395: {k: 'sw', home: '/?f=9165395', name: 'Swardani Post', back: 'Torna alla home', fonts: 'family=Cinzel:wght@700;800&family=Libre+Caslon+Text:ital,wght@0,400;0,700;1,400&family=Source+Sans+3:wght@400;600;700'}
  };
  var SP_STAMPS = {'errata corrige': 'CORRETTO', 'il termometro': 'BOCCIATI'};
 
@@ -4880,9 +4880,9 @@ if (document.readyState === 'loading') {
   window.__hxhRedazioniFirmeMobile = true;
 
   var REDAZIONI_FIRME = window.REDAZIONI_FIRME || {
-    '65121577': { nome: 'La Spina', firme: ['Spina Dorsale', 'Alla Spina'], libera: false },
-    '65121579': { nome: 'Swardani Post', firme: ['Ambrose Veritas', 'Ophelia Stroud', 'Gideon Marsh'], libera: true },
-    '65121578': { nome: 'York Shin Times', firme: ['Axel Quinn', 'Beatrixe Lindholm'], libera: true }
+    '9165393': { nome: 'La Spina', firme: ['Spina Dorsale', 'Alla Spina'], libera: false },
+    '9165395': { nome: 'Swardani Post', firme: ['Ambrose Veritas', 'Ophelia Stroud', 'Gideon Marsh'], libera: true },
+    '9165394': { nome: 'York Shin Times', firme: ['Axel Quinn', 'Beatrixe Lindholm'], libera: true }
   };
 
   var HEAD_RE = /^[ \t]*(Firma|Data)[ \t]*:[ \t]*([^\r\n]*)(\r?\n|$)/i;
@@ -5079,9 +5079,9 @@ if (document.readyState === 'loading') {
   var MAX_ETA = 15 * 60 * 1000;
 
   var TESTATE = {
-    '65121577': { profilo: 'LaSpina', nome: 'La Spina', dominio: 'laspina.onion' },
-    '65121578': { profilo: 'YorkShinTimes', nome: 'York Shin Times', dominio: 'yorkshintimes.yr' },
-    '65121579': { profilo: 'SwardaniPost', nome: 'Swardani Post', dominio: 'swardanipost.as' }
+    '9165393': { profilo: 'LaSpina', nome: 'La Spina', dominio: 'laspina.onion' },
+    '9165394': { profilo: 'YorkShinTimes', nome: 'York Shin Times', dominio: 'yorkshintimes.yr' },
+    '9165395': { profilo: 'SwardaniPost', nome: 'Swardani Post', dominio: 'swardanipost.as' }
   };
 
   /* Testi dei post. {t} = titolo, {f} = ", di Nome" oppure vuoto.
