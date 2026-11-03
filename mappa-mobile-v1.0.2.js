@@ -1,5 +1,5 @@
 /* ================================================================
-   mappa-mobile-v1.1.js — Mappa Interattiva GDR Hunter x Hunter (mobile)
+   mappa-mobile-v1.2.js — Mappa Interattiva GDR Hunter x Hunter (mobile)
    Versione mobile di mappa-v4.0.js. Caricato via jsDelivr.
    Configurazione opzionale tramite GDR_MAP_CONFIG (imgUrl).
    Stessi dati e stesse zone del desktop; cambia l'interazione:
@@ -14,7 +14,7 @@ if (document.getElementById('gdr-btn')) return;
 var CFG = window.GDR_MAP_CONFIG || {};
 var IMG_URL = CFG.imgUrl || 'https://upload.forumfree.net/i/ff13982804/Hunter/Mondo-HxH-Mappa.png';
 var MAP_W = 915, MAP_H = 606;
-var ZOOM_MIN = 1, ZOOM_MAX = 4, ZOOM_DEFAULT = 2.5;
+var ZOOM_MIN = 1, ZOOM_MAX = 4, ZOOM_DEFAULT = 1;
 
 /* Font */
 if (!document.querySelector('link[href*="Alegreya"]')) {
