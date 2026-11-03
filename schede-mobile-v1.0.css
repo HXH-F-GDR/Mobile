@@ -1,0 +1,252 @@
+/* Scheda 1: Dark Night */
+.scheda-darknight, .portfolio-darknight {--bordo: #4A5F7F; --sfondo: #252525; --titolo1: #2D3E5F; --titolo2: #7090C0; --sfondo2: #1E2A3F; --testo: #A6A1C2; --vitale: #FFFFFF; --tratto1:rgba(255, 255, 255, 0.05) 10px; --tratto2:rgba(255, 255, 255, 0.08) 11px}
+
+/* Scheda 2: Cherry */
+.scheda-cherry, .portfolio-cherry {--bordo: #C07090; --sfondo: #FFF0F5; --titolo1: #E0B0C8; --titolo2: #7A2A45; --sfondo2: #F0D8E4; --testo: #4A1028; --vitale: #1A0010; --tratto1:rgba(0, 0, 0, 0.05) 10px; --tratto2:rgba(0, 0, 0, 0.08) 11px}
+
+/* Scheda 3: Lavender */
+.scheda-lavender, .portfolio-lavender {--bordo: #9080C0; --sfondo: #FAF8FF; --titolo1: #DCD0F0; --titolo2: #4A3880; --sfondo2: #F0ECF8; --testo: #281E50; --vitale: #100830; --tratto1:rgba(0, 0, 0, 0.05) 10px; --tratto2:rgba(0, 0, 0, 0.08) 11px}
+
+/* Scheda 4: Ice */
+.scheda-ice, .portfolio-ice {--bordo: #6090B0; --sfondo: #F5F9FC; --titolo1: #C0D8EC; --titolo2: #2A5A7A; --sfondo2: #E0ECF5; --testo: #183A50; --vitale: #081828; --tratto1:rgba(0, 0, 0, 0.05) 10px; --tratto2:rgba(0, 0, 0, 0.08) 11px}
+
+/* Scheda 5: Garden */
+.scheda-garden, .portfolio-garden {--bordo: #6A9070; --sfondo: #F2F8F2; --titolo1: #C8DCC8; --titolo2: #2A5030; --sfondo2: #E8F0E8; --testo: #183020; --vitale: #081408; --tratto1:rgba(0, 0, 0, 0.05) 10px; --tratto2:rgba(0, 0, 0, 0.08) 11px}
+
+/* Scheda 6: Autumn */
+.scheda-autumn, .portfolio-autumn {--bordo: #9A5030; --sfondo: #FDF5EC; --titolo1: #E8C8A0; --titolo2: #6A2808; --sfondo2: #F5E8D8; --testo: #3A1504; --vitale: #180800; --tratto1:rgba(0, 0, 0, 0.05) 10px; --tratto2:rgba(0, 0, 0, 0.08) 11px}
+
+/* Scheda 7: Coral */
+.scheda-coral, .portfolio-coral {--bordo: #D08870; --sfondo: #FFF8F5; --titolo1: #F8D8C8; --titolo2: #C04828; --sfondo2: #FDF0EC; --testo: #187870; --vitale: #003830; --tratto1:rgba(0, 0, 0, 0.05) 10px; --tratto2:rgba(0, 0, 0, 0.08) 11px}
+
+/* Scheda 8: Paper */
+.scheda-paper, .portfolio-paper {--bordo: #7080A0; --sfondo: #F8F4E8; --titolo1: #C8D0E0; --titolo2: #1A2848; --sfondo2: #E8E4D8; --testo: #0E1830; --vitale: #040810; --tratto1:rgba(0, 0, 0, 0.05) 10px; --tratto2:rgba(0, 0, 0, 0.08) 11px}
+
+/* Scheda 9: Purple */
+.scheda-purple, .portfolio-purple {--bordo: #8860A0; --sfondo: #2C1E38; --titolo1: #4A3060; --titolo2: #C898E0; --sfondo2: #3A2848; --testo: #E0C8F5; --vitale: #FAF5FF; --tratto1:rgba(255, 255, 255, 0.05) 10px; --tratto2:rgba(255, 255, 255, 0.08) 11px}
+
+/* Scheda 10: Teal */
+.scheda-teal, .portfolio-teal {--bordo: #508888; --sfondo: #283838; --titolo1: #3C5858; --titolo2: #80D0C8; --sfondo2: #304848; --testo: #B8E8E4; --vitale: #F0FFFD; --tratto1:rgba(255, 255, 255, 0.05) 10px; --tratto2:rgba(255, 255, 255, 0.08) 11px}
+
+/* Scheda 11: Violet Ash */
+.scheda-violetash, .portfolio-violetash {--bordo: #786890; --sfondo: #241E2E; --titolo1: #403048; --titolo2: #B0A0D0; --sfondo2: #302838; --testo: #D0C8E8; --vitale: #F5F2FF; --tratto1:rgba(255, 255, 255, 0.05) 10px; --tratto2:rgba(255, 255, 255, 0.08) 11px}
+
+/* Scheda 12: Rust */
+.scheda-rust, .portfolio-rust {--bordo: #A06878; --sfondo: #281820; --titolo1: #482830; --titolo2: #D09098; --sfondo2: #382028; --testo: #E8C0C8; --vitale: #FAEEF0; --tratto1:rgba(255, 255, 255, 0.05) 10px; --tratto2:rgba(255, 255, 255, 0.08) 11px}
+
+/* Scheda 13: Hacker */
+.scheda-hacker, .portfolio-hacker {--bordo: #00B8A0; --sfondo: #020808; --titolo1: #081A16; --titolo2: #00E8C8; --sfondo2: #050E0C; --testo: #80F0E0; --vitale: #E0FFFA; --tratto1:rgba(255, 255, 255, 0.05) 10px; --tratto2:rgba(255, 255, 255, 0.08) 11px}
+
+/* Scheda 14: Neon */
+.scheda-neon, .portfolio-neon {--bordo: #E040A0; --sfondo: #060610; --titolo1: #0C2028; --titolo2: #00C8D8; --sfondo2: #0C0C14; --testo: #C0E8F0; --vitale: #FFFFFF; --tratto1:rgba(255, 255, 255, 0.05) 10px; --tratto2:rgba(255, 255, 255, 0.08) 11px}
+
+/* Scheda 15: Sage */
+.scheda-sage, .portfolio-sage {--bordo: #808870; --sfondo: #DCCAB8; --titolo1: #A8B898; --titolo2: #786040; --sfondo2: #C8B8A0; --testo: #201808; --vitale: #080C04; --tratto1:rgba(255, 255, 255, 0.05) 10px; --tratto2:rgba(255, 255, 255, 0.08) 11px}
+
+/* Scheda 16: Dark Flower */
+.scheda-darkflower, .portfolio-darkflower {--bordo: #C06878; --sfondo: #182030; --titolo1: #301828; --titolo2: #5080B0; --sfondo2: #101828; --testo: #F0C8D0; --vitale: #FFF0F4; --tratto1:rgba(255, 255, 255, 0.05) 10px; --tratto2:rgba(255, 255, 255, 0.08) 11px}
+
+/* Scheda 17: Poison */
+.scheda-poison, .portfolio-poison {--bordo: #40B0A0; --sfondo: #2C1040; --titolo1: #081C20; --titolo2: #8040B0; --sfondo2: #200C30; --testo: #B0E8E0; --vitale: #F0FFFC; --tratto1:rgba(255, 255, 255, 0.05) 10px; --tratto2:rgba(255, 255, 255, 0.08) 11px}
+
+/* Scheda 18: Artic Mint */
+.scheda-articmint, .portfolio-articmint {--bordo: #508878; --sfondo: #182030; --titolo1: #102020; --titolo2: #405878; --sfondo2: #101828; --testo: #B8D0C8; --vitale: #EAF4F0; --tratto1:rgba(255, 255, 255, 0.05) 10px; --tratto2:rgba(255, 255, 255, 0.08) 11px}
+
+/* Scheda 19: Yin */
+.scheda-yin, .portfolio-yin {--bordo: #414040; --sfondo: #111111; --titolo1: #252525; --titolo2: #6D6D6D; --sfondo2: #1A1A1A; --testo: #DBD9D9; --vitale: #FFFFFF; --tratto1:rgba(255, 255, 255, 0.05) 10px; --tratto2:rgba(255, 255, 255, 0.08) 11px}
+
+/* Scheda 20: Yang */
+.scheda-yang, .portfolio-yang {--bordo: #000000; --sfondo: #FAFAFA; --titolo1: #D8D8D8; --titolo2: #101010; --sfondo2: #F0F0F0; --testo: #383838; --vitale: #000000; --tratto1:rgba(0, 0, 0, 0.05) 10px; --tratto2:rgba(0, 0, 0, 0.08) 11px}
+
+/* Scheda 21: Dark Violet */
+.scheda-darkviolet, .portfolio-darkviolet {--bordo: #6B3A8B; --sfondo: #170D1F; --titolo1: #2D1045; --titolo2: #A060D0; --sfondo2: #220D33; --testo: #C9A0E0; --vitale: #F0E0FF; --tratto1:rgba(255, 255, 255, 0.05) 10px; --tratto2:rgba(255, 255, 255, 0.08) 11px}
+
+/* Scheda 22: Blood */
+.scheda-blood, .portfolio-blood {--bordo: #7F2A2A; --sfondo: #1A1A1A; --titolo1: #3D1010; --titolo2: #C05050; --sfondo2: #2A1010; --testo: #C9A0A0; --vitale: #FFFFFF; --tratto1:rgba(255, 255, 255, 0.05) 10px; --tratto2:rgba(255, 255, 255, 0.08) 11px}
+
+/* SCHEDA BASE */
+.scheda-pg-container *::-webkit-scrollbar {width: .8em}
+.scheda-pg-container *::-webkit-scrollbar-track-piece {background-color: var(--sfondo)!important; border: 1px solid var(--bordo)!important}
+.scheda-pg-container *::-webkit-scrollbar-thumb {background-color: var(--bordo); border: 2px solid var(--bordo)}
+.scheda-pg-container {border: solid var(--bordo); border-width: 12px 4px; border-radius: 30px!important; background: var(--sfondo); max-width: 700px!important; display: flex; flex-direction: column; gap: 0; line-height: 1.5em; font-size: 14px; font-family:montserrat}
+.scheda-immagine {display: none}
+.container-nomecognome {display:block; position:relative; border: 5px solid var(--bordo); background:linear-gradient(135deg, var(--sfondo) 0%, var(--sfondo2) 50%, var(--sfondo) 100%); min-height: 56px; margin: -8px 5px!important; max-width: 680px!important; border-radius: 20px 20px 0 0}
+.container-nomecognome::before {content:''; position:absolute; inset: 0; background:repeating-linear-gradient(45deg, transparent, transparent 10px, var(--tratto1), var(--tratto2)); pointer-events:none}
+.scheda-nomecognome button {display:none}
+.nomecognome {position: relative; z-index: 1; font-family: alegreya sans sc; font-weight:bold; font-style:italic; color:var(--bordo); font-size: 40px; line-height: 1.2}
+.scheda-bottoni {display: none}
+.scheda-slide {height: 500px; overflow-y:scroll}
+.barra-pg {display: block; transition: width 1.8s ease}
+.dati-pg {font-family: arial; font-variant: small-caps; font-size: 12px; font-weight: normal; color: var(--testo); text-align: center; text-shadow: 0 0 5px var(--titolo2)}
+.dati-pg2 {font-family: arial; font-variant: small-caps; font-size: 12px; font-weight: normal; color: var(--testo); text-align: center}
+.container-barra {position: relative; background: var(--sfondo); border-radius: 10px; flex: 1; height: 12px; overflow: hidden; border: 1px solid var(--titolo2)}
+.barra-exp {display:block; margin: 0; background:linear-gradient(90deg, var(--titolo1), var(--titolo2)); border-radius: 10px; box-shadow: 0 0 8px var(--testo); transition:width 0.5s ease}
+.dati-exp-row {display: flex; align-items: center; gap: 8px; padding: 4px 8px}
+.img-dati, .img-info {float:left; margin: 5px}
+ .img-info2 {float:left; margin: 5px; margin-top: 0}
+.img-dati img {height: 445px; border: 4px solid var(--bordo); max-width: 120px; padding: 4px; object-fit: cover}
+.img-info img {height: 460px; border: 4px solid var(--bordo); max-width: 120px; padding: 4px; object-fit: cover}
+.img-info2 img {height: 220px; border: 4px solid var(--bordo); max-width: 120px; padding: 4px; object-fit: cover; margin-bottom: 5px}
+.div-dati {max-width: 505px; height: 445px; overflow-y:scroll; margin: 5px; border: 4px solid var(--bordo); padding: 4px; font-family:montserrat}
+.scheda-label::before {content:'\2756'; margin-right: 3px; font-weight:normal}
+.scheda-label {color:var(--titolo2); font-weight:bold; font-variant:small-caps}
+.scheda-entry {color: var(--testo)}
+.scheda-entry a {color: var(--bordo)!important; border-bottom:none; text-decoration:none; font-weight: bold}
+.slide-info {text-align:center; font-family:montserrat}
+.info-aggettivi {display:none}
+.info-citazione {margin: 5px; background:var(--bordo); min-height: 22px; text-align:center; color:var(--sfondo); font-variant: small-caps; font-weight: bold; font-size: 11px; line-height: 2em}
+.info-citazione span::before {content:'\275D'; font-size: 16px; font-weight:normal}
+.info-citazione span::after {content:'\275E'; font-size: 16px; font-weight:normal}
+.img-info {margin-top: 0}
+.info-aspetto, .info-storia {max-width: 505px; height: 220px; overflow-y:scroll; margin: 5px; border: 4px solid var(--bordo); padding: 4px; font-family:montserrat; text-align:left}
+.slide-statistiche {font-family:montserrat; width: 100%; padding: 5px}
+.stats-grid, .stats-vitali {display: grid; grid-template-columns: 1fr 1fr; gap: 6px; padding: 4px; width: 100%}
+.slide-statistiche, .stats-grid, .stats-vitali, .competenze-grid, .stat-card, .stat-card-vitale, .competenza-card {box-sizing: border-box !important; width: 100% !important}
+.slide-statistiche .competenza-card * {text-align: left !important}
+.slide-statistiche .competenza-card.bloccata .competenza-bloccata-label {text-align: center !important}
+.scheda-slide, .slide-pg {width: 100% !important; text-align: left !important}
+.stats-vitali {margin-top: 4px}
+.stats-sep {text-align: center; color: var(--bordo); font-size: 10px; letter-spacing: 0.3em; margin: 4px 0; font-variant: small-caps}
+.stat-card, .stat-card-vitale, .competenza-card {position: relative; overflow: hidden; border-radius: 4px; padding: 6px 10px}
+.stat-card::before, .stat-card-vitale::before, .competenza-card::before {content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(45deg, transparent, transparent 10px, var(--tratto1), var(--tratto2)); pointer-events: none}
+.stat-card, .competenza-card {background: linear-gradient(135deg, var(--sfondo) 0%, var(--sfondo2) 100%); border: 1px solid var(--bordo)}
+.stat-card {display: flex; justify-content: space-between; align-items: center; border-left: 3px solid var(--titolo2)}
+.competenza-card {display: flex; flex-direction: column; justify-content: center; border-left: 3px solid var(--titolo2); flex-shrink: 0; padding: 8px 10px}
+.stat-card-vitale {background: linear-gradient(135deg, var(--sfondo2) 0%, var(--titolo1) 100%); border: 1px solid var(--titolo2); display: flex; justify-content: space-between; align-items: center}
+.stat-label, .competenza-oggetto-label {font-variant: small-caps; font-weight: bold; color: var(--titolo2); font-size: 12px}
+.stat-label::before, .competenza-nome::before, .competenza-oggetto-label::before, .barra-card-label::before, .equip-box-body ul li::before {content: '\25C8'; color: var(--bordo); font-weight: normal; font-size: 16px; margin-right: 3px}
+.stat-label.over::before {content: '\F17C0'; font-family: material design icons; color: var(--bordo); font-weight: normal; font-size: 22px; margin-right: 3px; vertical-align:middle}
+.stat-value {font-size: 18px; font-weight: bold; color: var(--titolo2); text-shadow: 0 0 8px var(--titolo2); letter-spacing: 0.05em}
+.stat-card-vitale .stat-label {font-size: 14px; color:var(--vitale)}
+.stat-card-vitale .stat-value {font-size: 20px; color: var(--vitale); text-shadow: 0 0 10px var(--titolo2)}
+.competenze-grid {display: flex; flex-direction: column; gap: 6px; padding: 4px; height: 215px; overflow-y: scroll; width: calc(100% - 5px) !important; margin: 5px !important}
+.competenza-card {display: block; border-left: 3px solid var(--titolo2); flex-shrink: 0; flex-direction: column; justify-content: center; padding: 8px 10px}
+.competenza-card.bloccata {border-left-color: var(--bordo); opacity: 0.4; filter: grayscale(0.5); align-items: center}
+.slide-statistiche .competenza-header {display: flex !important; justify-content: space-between !important; align-items: center !important}
+.slide-statistiche .competenza-desc, .slide-statistiche .competenza-oggetto {display: block !important; text-align: left !important}
+.competenza-nome {font-variant: small-caps; font-weight: bold; font-size: 15px; color: var(--titolo2); text-shadow: 0 0 6px var(--titolo2)}
+.competenza-livello {font-size: 12px; font-weight: bold; color: var(--sfondo); background: var(--titolo2); padding: 1px 8px; border-radius: 10px; letter-spacing: 0.05em}
+.competenza-bloccata-label {font-variant: small-caps; font-size: 12px; color: var(--testo); text-align: center; letter-spacing: 0.2em}
+.competenza-bloccata-label i {margin-right: 6px}
+.competenza-desc, .competenza-oggetto {font-size: 12px; color: var(--testo); font-family: montserrat, arial; line-height: 1.5em}
+.competenza-desc {margin-bottom: 5px}
+.slide-poteri, .div-poteri, .hatsu-card, .barre-row, .barra-card, .poteri-box, .titolo-poteri-box {box-sizing: border-box !important; width: 100% !important; text-align: left !important}
+.slide-poteri {display: flex !important}
+.hatsu-card {background: linear-gradient(135deg, var(--titolo1) 0%, var(--sfondo2) 50%, var(--titolo1) 100%); border: 2px solid var(--titolo2); border-radius: 8px; padding: 10px 14px; display: flex; justify-content: space-between; align-items: center; position: relative; overflow: hidden}
+.hatsu-card > div {flex: 1}
+.hatsu-card::before {content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(45deg, transparent, transparent 10px, var(--tratto1), var(--tratto2) 11px)}
+.hatsu-card-label {font-variant: small-caps; font-size: 11px; color: var(--titolo2); letter-spacing: 0.3em; display: block; margin-bottom: 3px}
+.hatsu-card-value {font-variant: small-caps; font-size: 20px; font-weight: bold; color: var(--vitale); text-shadow: 0 0 10px var(--titolo2)}
+.hatsu-card-icon {font-size: 50px; color: var(--titolo2); opacity: 0.6}
+.barre-row {display: grid; grid-template-columns: 1fr 1fr; gap: 6px}
+.barra-card {background: linear-gradient(135deg, var(--sfondo) 0%, var(--sfondo2) 100%); border: 1px solid var(--bordo); border-radius: 4px; padding: 8px 10px; position: relative; overflow: hidden}
+.barra-card::before {content: ''; position: absolute; inset: 0; z-index: 0; background: repeating-linear-gradient(45deg, transparent, transparent 10px, var(--tratto1), var(--tratto2)); pointer-events: none}
+.barra-card-header {position: relative; z-index: 1; display: flex; justify-content: space-between; margin-bottom: 5px}
+.barra-card-label {font-variant: small-caps; font-weight: bold; font-size: 12px; color: var(--titolo2)}
+.barra-card-pct {font-size: 11px; color: var(--testo)}
+.bc-container {position: relative; z-index: 1; background: var(--sfondo); border-radius: 10px; height: 10px; overflow: hidden; border: 1px solid var(--bordo)}
+.bc-barra {height: 100%; border-radius: 10px; transition: width 1.8s ease}
+.bc-nen, .bc-tenacia {display:block; margin: 0; background: linear-gradient(90deg, var(--titolo1), var(--titolo2)); box-shadow: 0 0 8px var(--titolo2)}
+.div-poteri {height: 503px; margin: 5px; display: flex; flex-direction: column; gap: 6px}
+.titolo-poteri-box {height: 35px; background:var(--bordo); color:var(--sfondo); font-family:impact; font-style: italic; text-align:center!important; font-size: 45px; line-height:.8em; letter-spacing: 4px}
+.poteri-box {flex: 1; overflow-y: scroll; border: 4px solid var(--bordo); padding: 6px; font-size: 13px; line-height: 1.6em}
+.slide-equip, .equip-box, .equip-box-header, .equip-box-body {box-sizing: border-box !important; width: 100% !important; text-align: left !important}
+.slide-equip {padding: 5px; display: grid; grid-template-columns: 1fr 1fr; gap: 6px; height: 513px}
+.equip-box {border: 4px solid var(--bordo); border-radius: 4px; overflow: hidden; display: flex; flex-direction: column}
+.equip-box-header {background: linear-gradient(90deg, var(--titolo1), var(--sfondo2)); border-bottom: 2px solid var(--titolo2); padding: 3px 8px; text-align: center!important}
+.equip-box-title {font-variant: small-caps; font-weight: bold; font-size: 12px; color: var(--titolo2); letter-spacing: 0.1em}
+.equip-box-body {background: linear-gradient(135deg, var(--sfondo) 0%, var(--sfondo2) 100%); overflow-y: scroll; padding: 5px 8px; font-size: 12px; color: var(--testo); line-height: 1.6em; flex: 1}
+.equip-box-body ul {list-style: none; padding: 0; margin: 0}
+.equip-item-name {color: var(--titolo2); font-weight: bold; font-variant: small-caps}
+.equip-item-info {color: var(--testo); font-size: 11px}
+.equip-item-info a {color: var(--bordo)!important; border-bottom:none; text-decoration:none; font-weight:bold}
+.scheda-copyright {margin: 5px; margin-top: 15px; background:var(--bordo); border-radius: 0 0 30px 30px; min-height: 20px; text-align:right}
+.scheda-copyright a {color: var(--sfondo)!important; padding-right: 10px; border-bottom:none; text-decoration:none; font-family: arial; font-variant: small-caps; font-size: 12px; font-weight: bold; line-height: 1.5em}
+/*PORTFOLIO BASE*/
+
+.portfolio-container {border: solid var(--bordo); border-width: 10px 4px; border-radius: 24px; background: var(--sfondo); max-width: 700px!important; display: flex; flex-direction: column; gap: 0; line-height: 1.5em; font-size: 13px; font-family: montserrat, arial}
+.portfolio-container *::-webkit-scrollbar {width: .7em}
+.portfolio-container *::-webkit-scrollbar-track-piece {background-color: var(--sfondo)!important; border: 1px solid var(--bordo)!important}
+.portfolio-container *::-webkit-scrollbar-thumb {background-color: var(--bordo); border: 2px solid var(--bordo)}
+.portfolio-header {position: relative; display: flex; align-items: center; gap: 12px; padding: 8px 12px; background: linear-gradient(135deg, var(--sfondo) 0%, var(--sfondo2) 50%, var(--sfondo) 100%); border-bottom: 3px solid var(--bordo); overflow: hidden; border-radius: 10px 10px 0 0}
+.portfolio-header::before {content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(45deg, transparent, transparent 10px, var(--tratto1), var(--tratto2)); pointer-events: none}
+.portfolio-icon {position: relative; z-index: 1; width: 100px; height: 110px; border: 3px solid var(--bordo); border-radius: 8px; object-fit: cover; flex-shrink: 0}
+.portfolio-header-info {position: relative; z-index: 1; flex: 1}
+.portfolio-nome {font-family: alegreya sans sc, serif; font-weight: bold; font-style: italic; font-size: 30px; color: var(--bordo); line-height: 1.1em}
+.portfolio-sottotitolo {display: flex; gap: 10px; flex-wrap: wrap; margin-top: 4px}
+.portfolio-badge {font-variant: small-caps; font-size: 11px; font-weight: bold; background: var(--titolo1); color: var(--titolo2); border: 1px solid var(--bordo); padding: 1px 8px; border-radius: 10px; letter-spacing: 0.1em}
+.portfolio-bottoni {display: none}
+.portfolio-bottone {cursor: pointer; font-family: alegreya sans sc, serif; font-size: 14px; text-align: center; flex: 1; height: 28px; background: var(--sfondo); color: var(--titolo2); border: none; border-right: 2px solid var(--bordo); line-height: 28px; transition: background 0.2s}
+.portfolio-bottone:last-child {border-right: none}
+.portfolio-bottone.attivo, .portfolio-bottone:hover {background: var(--sfondo2)}
+.portfolio-schede-slide {height: 255px; overflow-y: scroll}
+.portfolio-slide {padding: 8px}
+.portfolio-slide:last-child {padding-bottom: 0}
+.portfolio-dati-grid {display: grid; grid-template-columns: 1fr; gap: 7px}
+.portfolio-dati-row {display: flex; align-items: baseline; gap: 6px; background: linear-gradient(135deg, var(--sfondo) 0%, var(--sfondo2) 100%); border: 1px solid var(--bordo); border-left: 3px solid var(--titolo2); border-radius: 4px; padding: 8px; position: relative; overflow: hidden}
+.portfolio-dati-row.vuoto {opacity:.3; padding: 0}
+.portfolio-dati-row::before {content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(45deg, transparent, transparent 10px, var(--tratto1), var(--tratto2)); pointer-events: none}
+.portfolio-dati-label {font-variant: small-caps; font-weight: bold; font-size: 11px; color: var(--titolo2); white-space: nowrap; flex-shrink: 0}
+.portfolio-dati-label::before {content: '\25C8 '; color: var(--bordo); font-size: 13px}
+.portfolio-dati-value {font-size: 12px; color: var(--testo); word-break: break-word}
+.portfolio-dati-row.full {grid-column: 1 / -1}
+.portfolio-stats-grid {display: grid; grid-template-columns: repeat(2, 1fr); gap: 3px; margin-bottom: 3px}
+.portfolio-stat-card {position: relative; overflow: hidden; border-radius: 4px; padding: 4px 6px; background: linear-gradient(135deg, var(--sfondo) 0%, var(--sfondo2) 100%); border: 1px solid var(--bordo); border-left: 3px solid var(--titolo2); display: flex; flex-direction: column; align-items: center; gap: 1px}
+.portfolio-stat-card::before {content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(45deg, transparent, transparent 10px, var(--tratto1), var(--tratto2)); pointer-events: none}
+.portfolio-stat-label {font-variant: small-caps; font-size: 11px; font-weight: bold; color: var(--titolo2); text-align: center; line-height: 1.2em}
+.portfolio-stat-value {font-size: 14px; font-weight: bold; color: var(--titolo2); text-shadow: 0 0 6px var(--titolo2); font-family: 'courier new', monospace}
+.portfolio-vitali-grid {display: grid; grid-template-columns: 1fr 1fr; gap: 3px; margin-bottom: 3px}
+.portfolio-stat-vitale {position: relative; overflow: hidden; border-radius: 4px; padding: 4px 8px; background: linear-gradient(135deg, var(--sfondo2) 0%, var(--titolo1) 100%); border: 1px solid var(--titolo2); display: flex; justify-content: space-between; align-items: center}
+.portfolio-stat-vitale .portfolio-stat-label {color: var(--vitale); font-size: 11px}
+.portfolio-stat-vitale .portfolio-stat-value {color: var(--vitale); font-size: 16px; text-shadow: 0 0 8px var(--titolo2)}
+.portfolio-inv-grid {display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px}
+.portfolio-inv-slot {border: 2px solid var(--bordo); border-radius: 4px; padding: 2px; background: linear-gradient(135deg, var(--sfondo) 0%, var(--sfondo2) 100%); display: flex; flex-direction: column; align-items: center; gap: 3px; min-height: 60px; justify-content: center; position: relative; overflow: hidden}
+.portfolio-inv-slot::before {content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(45deg, transparent, transparent 10px, var(--tratto1), var(--tratto2)); pointer-events: none}
+.portfolio-inv-slot.vuoto {opacity: 0.5; border-style: dashed}
+.portfolio-inv-numero {font-size: 10px; color: var(--bordo); font-variant: small-caps; letter-spacing: 0.1em}
+.portfolio-inv-nome {font-size: 11px; font-weight: bold; color: var(--titolo2); font-variant: small-caps; text-align: center; line-height: 1.2em}
+.portfolio-inv-info {font-size: 10px; color: var(--testo); text-align: center}
+/* Oggetti che occupano più slot: sempre una riga intera(due riquadri); i riquadri vuoti riempiono i buchi lasciati sopra */
+.portfolio-inv-grid {grid-auto-flow: dense}
+.portfolio-inv-slot.span2, .portfolio-inv-slot.span3, .portfolio-inv-slot.span4, .portfolio-inv-slot.span5 {grid-column: span 2}
+.portfolio-barre-row {display: grid; grid-template-columns: 1fr 1fr; gap: 5px; margin-top: 3px}
+.portfolio-barra-card {background: linear-gradient(135deg, var(--sfondo) 0%, var(--sfondo2) 100%); border: 1px solid var(--bordo); border-radius: 4px; padding: 6px 8px; position: relative; overflow: hidden}
+.portfolio-barra-card::before {content: ''; position: absolute; inset: 0; z-index: 0; background: repeating-linear-gradient(45deg, transparent, transparent 10px, var(--tratto1), var(--tratto2)); pointer-events: none}
+.portfolio-barra-header {position: relative; z-index: 1; display: flex; justify-content: space-between; margin-bottom: 4px}
+.portfolio-barra-label {font-variant: small-caps; font-weight: bold; font-size: 11px; color: var(--titolo2)}
+.portfolio-barra-label::before {content: '\25C8 '; color: var(--bordo); font-size: 13px}
+.portfolio-barra-pct {font-size: 10px; color: var(--testo)}
+.portfolio-bc-container {position: relative; z-index: 1; background: var(--sfondo); border-radius: 10px; height: 8px; overflow: hidden; border: 1px solid var(--bordo)}
+.portfolio-bc-fill {height: 100%; border-radius: 10px; display: block}
+.portfolio-bc-nen, .portfolio-bc-tenacia {display:block; margin: 0; background: linear-gradient(90deg, var(--titolo1), var(--titolo2)); box-shadow: 0 0 6px var(--titolo2)}
+.portfolio-sezione-titolo, .portfolio-sep {font-variant: small-caps; font-size: 10px; font-weight: bold; color: var(--bordo); letter-spacing: 0.3em; text-align: center; margin: 5px 0 4px}
+.portfolio-tecniche-box {border: 3px solid var(--bordo); padding: 5px 8px; font-size: 12px; color: var(--testo); line-height: 1.5em; height: 235px; overflow-y: scroll; background: linear-gradient(135deg, var(--sfondo) 0%, var(--sfondo2) 100%); text-align:left}
+.portfolio-comp-grid {display: grid; grid-template-columns: repeat(2, 1fr); gap: 4px}
+.portfolio-comp-card {background: linear-gradient(135deg, var(--sfondo) 0%, var(--sfondo2) 100%); border: 1px solid var(--bordo); border-left: 3px solid var(--titolo2); border-radius: 4px; padding: 4px 6px; display: flex; flex-direction: column; gap: 2px; position: relative; overflow: hidden}
+.portfolio-comp-card.bloccata {border-left-color: var(--bordo); opacity: 0.3}
+.portfolio-comp-card::before {content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(45deg, transparent, transparent 10px, var(--tratto1), var(--tratto2)); pointer-events: none}
+.portfolio-comp-nome {font-variant: small-caps; font-weight: bold; font-size: 10px; color: var(--titolo2); line-height: 1.2em}
+.portfolio-comp-lv {font-size: 9px; font-weight: bold; color: var(--sfondo); background: var(--titolo2); padding: 0 5px; border-radius: 8px; letter-spacing: 0.05em; align-self: flex-start}
+.portfolio-copyright {margin: 5px; margin-top: 8px; background: var(--bordo); border-radius: 0 0 20px 20px; min-height: 18px; text-align: right}
+.portfolio-copyright a {color: var(--sfondo)!important; padding-right: 10px; border-bottom: none; text-decoration: none; font-family: arial; font-variant: small-caps; font-size: 12px; font-weight: bold; line-height: 1.5em}
+/*Aggiunte NPC*/
+.info-aspetto.npc, .info-storia.npc {max-width: 100%}
+/*Slide Moveset*/
+.box-npc {border: 4px solid var(--bordo); border-radius: 4px; overflow: hidden; display: flex; flex-direction: column; flex: 1; min-height: 0; margin-bottom: 6px}
+.box-npc:last-child {margin-bottom: 0}
+.box-npc-header {width: 100%; background: linear-gradient(90deg, var(--titolo1), var(--sfondo2)); border-bottom: 2px solid var(--titolo2); padding: 3px 8px; flex-shrink: 0}
+.box-npc-title {font-variant: small-caps; font-weight: bold; font-size: 12px; color: var(--titolo2); letter-spacing: 0.1em}
+.box-npc-body {width: 100%; background: linear-gradient(135deg, var(--sfondo) 0%, var(--sfondo2) 100%); padding: 8px; font-size: 12px; line-height: 1.6em; overflow-y: scroll; flex: 1; min-height: 0}
+.slide-moveset {padding: 5px; display: flex; flex-direction: column; height: 513px; box-sizing: border-box}
+/* Slide Valutazioni */
+.slide-valutazioni {padding: 5px; height: 513px; box-sizing: border-box; overflow-y: auto}
+.val-titolo {font-family: impact, sans-serif; font-style: italic; text-align: center; font-size: 26px; letter-spacing: 3px; color: var(--sfondo); background: var(--bordo); padding: 2px 8px; margin-bottom: 8px}
+.val-card {position: relative; overflow: hidden; border-radius: 4px; padding: 8px 12px; background: linear-gradient(135deg, var(--sfondo) 0%, var(--sfondo2) 100%); border: 1px solid var(--bordo); border-left: 3px solid var(--titolo2); box-sizing: border-box; display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px}
+.val-card::before {content: ''; position: absolute; inset: 0; background: repeating-linear-gradient(45deg, transparent, transparent 10px, var(--tratto1), var(--tratto2)); pointer-events: none}
+.val-card-label {font-variant: small-caps; font-weight: bold; color: var(--titolo2); font-size: 13px}
+.val-card-label::before {content: '\25C8'; color: var(--bordo); font-weight: normal; font-size: 16px; margin-right: 3px}
+.stelle-fisse {margin: 0; display: flex; gap: 3px; font-size: 20px}
+.stella-on {color: var(--titolo2); text-shadow: 0 0 6px var(--titolo2)}
+.stella-off {color: var(--bordo); opacity: 0.25}
+/*Slide Altro */
+.slide-altro {padding: 5px; display: flex; flex-direction: column; height: 513px; box-sizing: border-box}
