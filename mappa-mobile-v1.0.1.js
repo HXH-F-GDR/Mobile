@@ -1,5 +1,5 @@
 /* ================================================================
-   mappa-mobile-v1.0.js — Mappa Interattiva GDR Hunter x Hunter (mobile)
+   mappa-mobile-v1.1.js — Mappa Interattiva GDR Hunter x Hunter (mobile)
    Versione mobile di mappa-v4.0.js. Caricato via jsDelivr.
    Configurazione opzionale tramite GDR_MAP_CONFIG (imgUrl).
    Stessi dati e stesse zone del desktop; cambia l'interazione:
@@ -14,8 +14,7 @@ if (document.getElementById('gdr-btn')) return;
 var CFG = window.GDR_MAP_CONFIG || {};
 var IMG_URL = CFG.imgUrl || 'https://upload.forumfree.net/i/ff13982804/Hunter/Mondo-HxH-Mappa.png';
 var MAP_W = 915, MAP_H = 606;
-var ZOOMS = [1, 1.6, 2.5, 3.5];
-var ZOOM_DEFAULT = 2;
+var ZOOM_MIN = 1, ZOOM_MAX = 4, ZOOM_DEFAULT = 2.5;
 
 /* Font */
 if (!document.querySelector('link[href*="Alegreya"]')) {
@@ -50,14 +49,8 @@ _style.textContent = `#gdr-btn {--sottotitolo: 'Alegreya', Georgia, serif; displ
 #gdr-lightbox-inner {position: absolute; top: 10px; left: 8px; right: 8px; bottom: 10px; background: #111; border: 1px solid #444; border-radius: 10px; padding: 12px; box-sizing: border-box; overflow-y: auto; -webkit-overflow-scrolling: touch; font-family: sans-serif; text-align: left}
 #gdr-close {position: absolute; top: 8px; right: 8px; width: 36px; height: 36px; font-size: 18px; line-height: 36px; text-align: center; color: #888; cursor: pointer; background: none; border: none; padding: 0; margin: 0; -webkit-appearance: none; appearance: none}
 #gdr-lightbox-title {font-family: sans-serif; font-size: 15px; font-weight: 600; line-height: 1.3; color: #CCC; margin: 2px 40px 10px 0; letter-spacing: 0.04em}
-#gdr-m-toolbar {width: 100%; table-layout: fixed; border-collapse: collapse; margin: 0 0 8px; background: none; border: 0}
-#gdr-m-toolbar td {padding: 0; border: 0; background: none; vertical-align: middle}
-#gdr-m-hint {font-size: 11px; line-height: 1.35; color: #777}
-#gdr-m-zoom {width: 128px; text-align: right; white-space: nowrap}
-#gdr-m-zoom button {display: inline-block; width: 36px; height: 32px; margin: 0 0 0 4px; padding: 0; border: 1px solid #444; border-radius: 6px; background: #1A1A1A; color: #DDD; font-size: 18px; line-height: 30px; text-align: center; cursor: pointer; -webkit-appearance: none; appearance: none}
-#gdr-m-zoom button:disabled {opacity: 0.35}
-#gdr-m-zoomlbl {display: inline-block; width: 40px; font-size: 11px; color: #888; text-align: center; vertical-align: middle}
-#gdr-m-scroll {position: relative; overflow: auto; -webkit-overflow-scrolling: touch; border-radius: 6px; background: #0A0A0A; touch-action: pan-x pan-y}
+#gdr-m-hint {font-size: 11px; line-height: 1.35; color: #777; margin: 0 0 8px}
+#gdr-m-scroll {position: relative; overflow: auto; -webkit-overflow-scrolling: touch; border-radius: 6px; background: #0A0A0A; touch-action: pan-x pan-y; overscroll-behavior: contain}
 #gdr-map-wrapper {position: relative; display: block; user-select: none; -webkit-user-select: none}
 #gdr-map-img {display: block; width: 100%; max-width: none; height: 100%; margin: 0; border: 0; border-radius: 0}
 #gdr-canvas {position: absolute; top: 0; left: 0; width: 100%; height: 100%; max-width: none}
@@ -128,10 +121,7 @@ _wrap.innerHTML = `<div id="gdr-btn">
  <div id="gdr-lightbox-inner">
   <button id="gdr-close" title="Chiudi">&#10005;</button>
   <div id="gdr-lightbox-title">&#128506; Mappa del Mondo</div>
-  <table id="gdr-m-toolbar"><tr>
-   <td id="gdr-m-hint">Trascina per muoverti, tocca un luogo per aprirlo.</td>
-   <td id="gdr-m-zoom"><button id="gdr-m-zout" title="Riduci">&minus;</button><span id="gdr-m-zoomlbl"></span><button id="gdr-m-zin" title="Ingrandisci">+</button></td>
-  </tr></table>
+  <div id="gdr-m-hint">Allarga con due dita per ingrandire, trascina per muoverti, tocca un luogo per aprirlo.</div>
   <div id="gdr-m-scroll">
    <div id="gdr-map-wrapper">
     <img id="gdr-map-img" src="${IMG_URL}" alt="Mappa del mondo">
@@ -374,7 +364,7 @@ var scrollBox = document.getElementById('gdr-m-scroll');
 var mapWrap = document.getElementById('gdr-map-wrapper');
 var svg = document.getElementById('gdr-canvas');
 var modalBg = document.getElementById('gdr-modal-bg');
-var zoomIdx = ZOOM_DEFAULT;
+var zoomScale = ZOOM_DEFAULT;
 var opened = false;
 
 /* Aree di tocco più grandi per i puntini di città e luoghi */
@@ -402,36 +392,84 @@ var opened = false;
  });
 })();
 
-/* Zoom */
+/* Zoom: pizzico con due dita dentro la mappa, una sola dita scorre normalmente */
 function gdrFitWidth() {
  var w = scrollBox.clientWidth || (window.innerWidth - 42);
  return w > 200 ? w : 320;
 }
-function gdrApplyZoom(keepCenter) {
- var fit = gdrFitWidth();
- var cx = 0.5, cy = 0.5;
- if (keepCenter && mapWrap.offsetWidth) {
-  cx = (scrollBox.scrollLeft + scrollBox.clientWidth / 2) / mapWrap.offsetWidth;
-  cy = (scrollBox.scrollTop + scrollBox.clientHeight / 2) / mapWrap.offsetHeight;
+function gdrBoxHeight() {
+ return Math.round(window.innerHeight * 0.58);
+}
+/* px, py: punto del riquadro (in pixel dal suo angolo) che deve restare fermo mentre si ingrandisce */
+function gdrSetScale(s, px, py) {
+ s = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, s));
+ var oldW = mapWrap.offsetWidth, oldH = mapWrap.offsetHeight;
+ var oldTop = parseFloat(mapWrap.style.marginTop) || 0;
+ var fx = 0.5, fy = 0.5;
+ if (oldW && oldH) {
+  fx = (scrollBox.scrollLeft + px) / oldW;
+  fy = (scrollBox.scrollTop + py - oldTop) / oldH;
  }
- var w = Math.round(fit * ZOOMS[zoomIdx]);
+ zoomScale = s;
+ var boxH = gdrBoxHeight();
+ var w = Math.round(gdrFitWidth() * s);
  var h = Math.round(w * MAP_H / MAP_W);
+ var top = h < boxH ? Math.round((boxH - h) / 2) : 0;
+ scrollBox.style.height = boxH + 'px';
  mapWrap.style.width = w + 'px';
  mapWrap.style.height = h + 'px';
- var maxH = Math.round(window.innerHeight * 0.58);
- scrollBox.style.height = Math.min(h, maxH) + 'px';
- scrollBox.scrollLeft = Math.max(0, cx * w - scrollBox.clientWidth / 2);
- scrollBox.scrollTop = Math.max(0, cy * h - scrollBox.clientHeight / 2);
- document.getElementById('gdr-m-zoomlbl').textContent = '×' + ZOOMS[zoomIdx];
- document.getElementById('gdr-m-zout').disabled = zoomIdx === 0;
- document.getElementById('gdr-m-zin').disabled = zoomIdx === ZOOMS.length - 1;
+ mapWrap.style.marginTop = top + 'px';
+ scrollBox.scrollLeft = Math.max(0, fx * w - px);
+ scrollBox.scrollTop = Math.max(0, fy * h + top - py);
 }
-document.getElementById('gdr-m-zin').addEventListener('click', function() {
- if (zoomIdx < ZOOMS.length - 1) { zoomIdx++; gdrApplyZoom(true); }
-});
-document.getElementById('gdr-m-zout').addEventListener('click', function() {
- if (zoomIdx > 0) { zoomIdx--; gdrApplyZoom(true); }
-});
+function gdrApplyZoom(keepCenter) {
+ var cw = scrollBox.clientWidth || gdrFitWidth();
+ if (!keepCenter) {
+  mapWrap.style.width = '0px';
+  mapWrap.style.height = '0px';
+  gdrSetScale(zoomScale, cw / 2, gdrBoxHeight() / 2);
+  return;
+ }
+ gdrSetScale(zoomScale, cw / 2, (scrollBox.clientHeight || gdrBoxHeight()) / 2);
+}
+
+var pinch = null, pinchEnd = 0, pinchRaf = 0, pinchNext = null;
+function gdrTouchDist(t) {
+ var dx = t[0].clientX - t[1].clientX, dy = t[0].clientY - t[1].clientY;
+ return Math.sqrt(dx * dx + dy * dy);
+}
+scrollBox.addEventListener('touchstart', function(e) {
+ if (e.touches.length === 2) {
+  e.preventDefault();
+  pinch = { d0: gdrTouchDist(e.touches) || 1, s0: zoomScale };
+ }
+}, { passive: false });
+scrollBox.addEventListener('touchmove', function(e) {
+ if (!pinch || e.touches.length !== 2) return;
+ e.preventDefault();
+ var r = scrollBox.getBoundingClientRect();
+ pinchNext = {
+  s: pinch.s0 * gdrTouchDist(e.touches) / pinch.d0,
+  x: (e.touches[0].clientX + e.touches[1].clientX) / 2 - r.left,
+  y: (e.touches[0].clientY + e.touches[1].clientY) / 2 - r.top
+ };
+ if (!pinchRaf) pinchRaf = requestAnimationFrame(function() {
+  pinchRaf = 0;
+  if (pinchNext) gdrSetScale(pinchNext.s, pinchNext.x, pinchNext.y);
+ });
+}, { passive: false });
+function gdrPinchStop(e) {
+ if (pinch && e.touches.length < 2) { pinch = null; pinchEnd = Date.now(); }
+}
+scrollBox.addEventListener('touchend', gdrPinchStop);
+scrollBox.addEventListener('touchcancel', gdrPinchStop);
+
+/* Fuori dalla mappa il pizzico non deve ingrandire tutta la pagina del forum */
+lb.addEventListener('touchmove', function(e) {
+ if (e.touches.length > 1) e.preventDefault();
+}, { passive: false });
+lb.addEventListener('gesturestart', function(e) { e.preventDefault(); });
+
 window.addEventListener('resize', function() {
  if (lb.classList.contains('open')) gdrApplyZoom(true);
 });
@@ -552,6 +590,7 @@ svg.addEventListener('click', function(e) {
  var el = e.target;
  while (el && el !== svg && !(el.getAttribute && el.getAttribute('data-zone'))) el = el.parentNode;
  if (!el || el === svg) return;
+ if (pinch || Date.now() - pinchEnd < 400) return;
  gdrOpenModal(el.getAttribute('data-zone'));
 });
 
