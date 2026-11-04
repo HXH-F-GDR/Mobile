@@ -52,13 +52,17 @@ if (HXH_DOMAINS.indexOf(location.hostname) === -1) return;
   var FADE = 150;
   var showTimer = null;
 
+  /* Posizione reale della parola nella pagina. getBoundingClientRect tiene
+     conto anche dei box con barra di scorrimento interna (es. il Baule
+     delle schede); il vecchio calcolo con offsetTop no, e il popup finiva
+     fuori schermo quando il box era scorso. */
   function calcDim(el, top) {
-    var b = 0;
-    while (el) {
-      b += top ? el.offsetTop : el.offsetLeft;
-      el = el.offsetParent;
-    }
-    return b;
+    var r = el.getBoundingClientRect();
+    var doc = document.documentElement;
+    var res = top
+      ? r.top + (window.pageYOffset || doc.scrollTop || 0)
+      : r.left + (window.pageXOffset || doc.scrollLeft || 0);
+    return Math.round(res);
   }
 
   function fadePopup(show) {
