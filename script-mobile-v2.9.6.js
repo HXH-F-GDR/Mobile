@@ -20,7 +20,7 @@ if (HXH_DOMAINS.indexOf(location.hostname) === -1) return;
 // Quando esce una nuova versione, aggiorna solo URL_CONFIG.
 // ═══════════════════════════════════════════════════════════════
 ;(function() {
-    var URL_CONFIG = 'https://cdn.jsdelivr.net/gh/HXH-F-GDR/ScriptForumfree@main/forum-config-v1.1.0.js';
+    var URL_CONFIG = 'https://cdn.jsdelivr.net/gh/HXH-F-GDR/ScriptForumfree@main/forum-config-v1.2.0.js';
     if (window.__hxhForumConfig) return;
     var sc = document.createElement('script');
     sc.src = URL_CONFIG;
